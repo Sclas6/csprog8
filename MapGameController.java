@@ -1,4 +1,5 @@
 import java.net.URL;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import javafx.event.ActionEvent;
@@ -15,6 +16,8 @@ public class MapGameController implements Initializable {
     public MoveChara chara;
     public GridPane mapGrid;
     public ImageView[] mapImageViews;
+    public Label label1;
+    public int item_count = 0;
 //    public Group[] mapGroups;
 
     @Override
@@ -39,6 +42,8 @@ public class MapGameController implements Initializable {
         for(int y=0; y<mapData.getHeight(); y++){
             for(int x=0; x<mapData.getWidth(); x++){
                 int index = y*mapData.getWidth() + x;
+                //added
+                mapImageViews[index] = mapData.getImageView(x,y);
                 if (x==cx && y==cy) {
                     mapGrid.add(c.getCharaImageView(), x, y);
                 } else {
@@ -48,7 +53,27 @@ public class MapGameController implements Initializable {
         }
     }
 
-    public void func1ButtonAction(ActionEvent event) { }
+    public void getItemAction(MoveChara c){
+        for(int y=0; y<mapData.getHeight(); y++){
+            for(int x=0; x<mapData.getWidth(); x++){
+                if(mapData.getMap(c.getPosX(), c.getPosY()) == MapData.TYPE_ITEM){
+                    mapData.setMap(c.getPosX(), c.getPosY(), MapData.TYPE_NONE);
+                    mapData.setImageViews();
+                    item_count++;
+                    label1.setText(Integer.toString(getItemCount()));
+                }
+            }
+        }
+    }
+    public int getItemCount(){
+        return item_count;
+    }
+
+    public void func1ButtonAction(ActionEvent event) { 
+        outputAction("RESET");
+        chara = new MoveChara(1, 1, mapData);
+        mapPrint(chara, mapData);
+    }
     public void func2ButtonAction(ActionEvent event) { }
     public void func3ButtonAction(ActionEvent event) { }
     public void func4ButtonAction(ActionEvent event) { }
@@ -59,7 +84,12 @@ public class MapGameController implements Initializable {
             downButtonAction();
         }else if (key == KeyCode.RIGHT){
             rightButtonAction();
+        }else if (key == KeyCode.LEFT){
+            leftButtonAction();
+        }else if (key == KeyCode.UP){
+            upButtonAction();
         }
+        
     }
 
     public void outputAction(String actionString) {
@@ -70,6 +100,7 @@ public class MapGameController implements Initializable {
         outputAction("DOWN");
         chara.setCharaDir(MoveChara.TYPE_DOWN);
         chara.move(0, 1);
+        getItemAction(chara);
         mapPrint(chara, mapData);
     }
     public void downButtonAction(ActionEvent event) {
@@ -80,9 +111,30 @@ public class MapGameController implements Initializable {
         outputAction("RIGHT");
         chara.setCharaDir(MoveChara.TYPE_RIGHT);
         chara.move( 1, 0);
+        getItemAction(chara);
         mapPrint(chara, mapData);
     }
     public void rightButtonAction(ActionEvent event) {
         rightButtonAction();
+    }
+    public void leftButtonAction(){
+        outputAction("LEFT");
+        chara.setCharaDir(MoveChara.TYPE_LEFT);
+        chara.move( -1, 0);
+        getItemAction(chara);
+        mapPrint(chara, mapData);
+    }
+    public void leftButtonAction(ActionEvent event) {
+        leftButtonAction();
+    }
+    public void upButtonAction(){
+        outputAction("UP");
+        chara.setCharaDir(MoveChara.TYPE_UP);
+        chara.move( 0, -1);
+        getItemAction(chara);
+        mapPrint(chara, mapData);
+    }
+    public void upButtonAction(ActionEvent event) {
+        upButtonAction();
     }
 }

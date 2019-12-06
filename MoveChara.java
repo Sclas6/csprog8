@@ -2,6 +2,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.animation.AnimationTimer;
+import javafx.scene.layout.GridPane;
 
 public class MoveChara {
     public static final int TYPE_DOWN  = 0;
@@ -18,6 +19,7 @@ public class MoveChara {
     private int posY;
 
     private MapData mapData;
+    public GridPane mapGrid;
 
     private Image[][] charaImages;
     private ImageView[] charaImageViews;
@@ -83,6 +85,9 @@ public class MoveChara {
         if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_WALL){
             return false;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_NONE){
+            return true;
+        }
+        else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_ITEM){
             return true;
         }
         return false;
