@@ -14,9 +14,14 @@ import javafx.scene.Group;
 public class MapGameController implements Initializable {
     public MapData mapData;
     public MoveChara chara;
+    public MapData mapData2;
+    public MoveChara chara2;
+
     public GridPane mapGrid;
     public ImageView[] mapImageViews;
+    public ImageView[] mapImageViews2;
     public Label label1;
+    public boolean map2 = false;
     public int item_count = 0;
 //    public Group[] mapGroups;
 
@@ -39,11 +44,12 @@ public class MapGameController implements Initializable {
         int cx = c.getPosX();
         int cy = c.getPosY();
         mapGrid.getChildren().clear();
-        for(int y=0; y<mapData.getHeight(); y++){
-            for(int x=0; x<mapData.getWidth(); x++){
-                int index = y*mapData.getWidth() + x;
+        mapImageViews = new ImageView[m.getHeight()*m.getWidth()];
+        for(int y=0; y<m.getHeight(); y++){
+            for(int x=0; x<m.getWidth(); x++){
+                int index = y*m.getWidth() + x;
                 //added
-                mapImageViews[index] = mapData.getImageView(x,y);
+                mapImageViews[index] = m.getImageView(x,y);
                 if (x==cx && y==cy) {
                     mapGrid.add(c.getCharaImageView(), x, y);
                 } else {
@@ -71,12 +77,25 @@ public class MapGameController implements Initializable {
 
     public void func1ButtonAction(ActionEvent event) { 
         outputAction("RESET");
+        mapData = new MapData(21,15);
         chara = new MoveChara(1, 1, mapData);
         mapPrint(chara, mapData);
+        map2 = false;
     }
-    public void func2ButtonAction(ActionEvent event) { }
-    public void func3ButtonAction(ActionEvent event) { }
-    public void func4ButtonAction(ActionEvent event) { }
+    public void func2ButtonAction(ActionEvent event) {
+        mapData2 = new MapData(23,17);
+        chara2 = new MoveChara(1,1,mapData2);
+        mapPrint(chara2,mapData2);
+        map2 = true;
+    }
+    public void func3ButtonAction(ActionEvent event) {
+        mapPrint(chara,mapData);
+        map2 = false;
+    }
+    public void func4ButtonAction(ActionEvent event) {
+        mapPrint(chara2,mapData2);
+        map2 = true;
+    }
 
     public void keyAction(KeyEvent event){
         KeyCode key = event.getCode();
@@ -98,10 +117,18 @@ public class MapGameController implements Initializable {
 
     public void downButtonAction(){
         outputAction("DOWN");
-        chara.setCharaDir(MoveChara.TYPE_DOWN);
-        chara.move(0, 1);
-        getItemAction(chara);
-        mapPrint(chara, mapData);
+        if(map2 == false){
+            chara.setCharaDir(MoveChara.TYPE_DOWN);
+            chara.move(0, 1);
+            getItemAction(chara);
+            mapPrint(chara, mapData);
+        }
+        else{
+            chara2.setCharaDir(MoveChara.TYPE_DOWN);
+            chara2.move(0, 1);
+            getItemAction(chara2);
+            mapPrint(chara2, mapData2);
+        }
     }
     public void downButtonAction(ActionEvent event) {
         downButtonAction();

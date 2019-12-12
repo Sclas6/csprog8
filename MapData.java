@@ -8,11 +8,13 @@ public class MapData {
     public static final int TYPE_WALL   = 1;
     public static final int TYPE_OTHERS = 2;
     public static final int TYPE_ITEM = 3;
+    public static final int TYPE_GOAL = 4;
     private static final String mapImageFiles[] = {
         "png/SPACE.png",
         "png/WALL.png",
         "png/SPACE.png",
-        "png/ITEM.png"
+        "png/ITEM.png",
+        "png/GOAL.png"
     };
 
     private Image[] mapImages;
@@ -20,6 +22,8 @@ public class MapData {
     private int[][] maps;
     private int width;
     private int height;
+    private boolean guusuu_x;
+    private boolean guusuu_y;
 
     MapData(int x, int y){
         mapImages     = new Image[mapImageFiles.length];
@@ -32,8 +36,12 @@ public class MapData {
         height = y;
         maps = new int[y][x];
 
+        guusuu_x = (x%2==0)?true:false;
+        guusuu_y = (y%2==0)?true:false;
+
         fillMap(MapData.TYPE_WALL);
         digMap(1, 3);
+        setGoal(getWidth()-2,getHeight()-2);
         setItem(3);
         setImageViews();
     }
@@ -82,9 +90,13 @@ public class MapData {
 
     public void digMap(int x, int y){
         setMap(x, y, MapData.TYPE_NONE);
-        int[][] dl = {{0,1},{0,-1},{-1,0},{1,0}};
+        int[][] dl = {{ 0, 1},
+                      { 0,-1},
+                      {-1, 0},
+                      { 1, 0}};
         int[] tmp;
 
+        //配列のシャッフル
         for (int i=0; i<dl.length; i++) {
             int r = (int)(Math.random()*dl.length);
             tmp = dl[i];
@@ -96,21 +108,23 @@ public class MapData {
             int dx = dl[i][0];
             int dy = dl[i][1];
             if (getMap(x+dx*2, y+dy*2) == MapData.TYPE_WALL){
-                setMap(x+dx, y+dy, MapData.TYPE_NONE);
+                setMap(x+dx, y+dy, MapData.TYPE_NONE);                
                 digMap(x+dx*2, y+dy*2);
-
             }
         }
     }
     public void setItem(int i){
         for(int y=0;y<height;y++){
             for(int x=0;x<width;x++){
-                if(getMap(x,y)==MapData.TYPE_NONE&&(int)(Math.random()*10)%2==0){
+                if(getMap(x,y)==MapData.TYPE_NONE&&(int)(Math.random()*100)%20==0){
                     maps[y][x]=MapData.TYPE_ITEM;
                 }
             }
         }
         maps[1][1]=MapData.TYPE_NONE;
+    }
+    public void setGoal(int x, int y){
+        setMap(x,y,MapData.TYPE_GOAL);
     }
 
     public void printMap(){
