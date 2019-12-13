@@ -12,7 +12,7 @@ public class MapData {
         "png/WALL.png",
         "png/SPACE.png",
         "png/ITEM.png",
-        "png/GOAL.png"// not used
+        "png/GOALFLAG.png"// not used
     };
 
     private Image[] mapImages;

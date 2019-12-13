@@ -2,7 +2,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,7 +22,12 @@ public class MapGameController implements Initializable {
     public GridPane mapGrid;
     public StackPane mapStack;
     public ImageView[] mapImageViews;
-    public int item_count = 0;
+    public boolean isgoal = false;
+
+    public Image goalImage = new Image("png/GOAL.png");
+    public ImageView goalImageView = new ImageView(goalImage);
+    public Button ranking = new Button("RANKING");
+    public Button next = new Button("NEXT");
 //    public Group[] mapGroups;
 
     @Override
@@ -45,7 +52,7 @@ public class MapGameController implements Initializable {
         for(int y=0; y<mapData.getHeight(); y++){
             for(int x=0; x<mapData.getWidth(); x++){
                 int index = y*mapData.getWidth() + x;
-                //mapImageViews = new ImageView[mapData.getHeight()*mapData.getWidth()];
+                //added
                 mapImageViews[index] = m.getImageView(x,y);
                 if (x==cx && y==cy) {
                     mapGrid.add(c.getCharaImageView(), x, y);
@@ -55,23 +62,32 @@ public class MapGameController implements Initializable {
             }
         }
     }
-    public int getItemCount(){
-        return item_count;
-    }
 
-    public void goalAction(){
+    public void goalAction(MoveChara c,MapData m){
+        if (c.isGoal(m)==true && isgoal==false){
+            goalImageView = new ImageView(goalImage);
+            mapStack.setAlignment(Pos.CENTER);
+            mapStack.getChildren().add(goalImageView);
+            isgoal = true;
+        }
     }
-/**
- * 
- * 
- */
-    public boolean canGoal(){
-        if (this.getItemCount() == 0){
-            return true;
-        }
-        else{
-            return false;
-        }
+    public void initGoalButton(){
+        mapStack.setAlignment(goalImageView, Pos.CENTER);
+        mapStack.setAlignment(ranking,Pos.BOTTOM_RIGHT);
+        mapStack.setAlignment(next,Pos.BOTTOM_RIGHT);
+        mapStack.setMargin(ranking, new Insets(90,140,88,0));
+        mapStack.setMargin(next, new Insets(90,65,88,0));
+        ranking.setPrefWidth(80);
+        ranking.setPrefHeight(8);
+        next.setPrefWidth(60);
+        next.setPrefHeight(8);
+        next.setOnAction((ActionEvent)-> {
+            mapStack.getChildren().removeAll(goalImageView,ranking,next);
+            outputAction("NEXT");
+            mapData = new MapData(21,15);
+            chara = new MoveChara(1, 1, mapData);
+            mapPrint(chara, mapData);
+        });
     }
 
     public void func1ButtonAction(ActionEvent event) {
@@ -86,18 +102,12 @@ public class MapGameController implements Initializable {
         //map2 = false;
     }
     public void func3ButtonAction(ActionEvent event) {
-        //mapStack = new StackPane();
-        Image goalImage = new Image("png/GOAL2.png");
-        ImageView goalImageView = new ImageView(goalImage);
-        mapStack.setAlignment(Pos.TOP_CENTER);
-        mapStack.getChildren().addAll(goalImageView);
-        //Stage st = new Stage();
-        //st.setScene(new Scene(mapStack));
-        mapStack.getChildren().add(goalImageView);
-        outputAction("GOAL");
-        
+        initGoalButton();
+        mapStack.getChildren().addAll(goalImageView,ranking,next);
     }
-    public void func4ButtonAction(ActionEvent event) { }
+    public void func4ButtonAction(ActionEvent event) {
+        mapStack.getChildren().removeAll(goalImageView,ranking,next);
+    }
 
     public void keyAction(KeyEvent event){
         KeyCode key = event.getCode();
@@ -117,6 +127,7 @@ public class MapGameController implements Initializable {
         chara.setCharaDir(MoveChara.TYPE_DOWN);
         chara.move(0, 1);
         mapPrint(chara, mapData);
+        goalAction(chara, mapData);
     }
     public void downButtonAction(ActionEvent event) {
         downButtonAction();
