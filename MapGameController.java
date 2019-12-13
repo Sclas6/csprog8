@@ -80,14 +80,6 @@ public class MapGameController implements Initializable {
         ranking.setPrefHeight(8);
         next.setPrefWidth(60);
         next.setPrefHeight(8);
-        next.setOnAction((ActionEvent)-> {
-            mapStack.getChildren().removeAll(goalImageView,ranking,next);
-            outputAction("NEXT");
-            mapData = new MapData(21,15);
-            chara = new MoveChara(1, 1, mapData);
-            mapPrint(chara, mapData);
-            isgoal = false;
-        });
     }
 
     public void func1ButtonAction(ActionEvent event) {
