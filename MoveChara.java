@@ -80,10 +80,13 @@ public class MoveChara {
     }
 
     public boolean canMove(int dx, int dy){
+        MapGameController cont = new MapGameController();
         if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_WALL){
             return false;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_NONE){
             return true;
+        } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL){
+            return (cont.canGoal()==true)?true:false;
         }
         return false;
     }

@@ -1,20 +1,26 @@
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 
 public class MapGameController implements Initializable {
     public MapData mapData;
     public MoveChara chara;
     public GridPane mapGrid;
+    public StackPane mapStack;
     public ImageView[] mapImageViews;
+    public int item_count = 0;
 //    public Group[] mapGroups;
 
     @Override
@@ -39,6 +45,8 @@ public class MapGameController implements Initializable {
         for(int y=0; y<mapData.getHeight(); y++){
             for(int x=0; x<mapData.getWidth(); x++){
                 int index = y*mapData.getWidth() + x;
+                //mapImageViews = new ImageView[mapData.getHeight()*mapData.getWidth()];
+                mapImageViews[index] = m.getImageView(x,y);
                 if (x==cx && y==cy) {
                     mapGrid.add(c.getCharaImageView(), x, y);
                 } else {
@@ -47,10 +55,48 @@ public class MapGameController implements Initializable {
             }
         }
     }
+    public int getItemCount(){
+        return item_count;
+    }
 
-    public void func1ButtonAction(ActionEvent event) { }
-    public void func2ButtonAction(ActionEvent event) { }
-    public void func3ButtonAction(ActionEvent event) { }
+    public void goalAction(){
+    }
+/**
+ * 
+ * 
+ */
+    public boolean canGoal(){
+        if (this.getItemCount() == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public void func1ButtonAction(ActionEvent event) {
+        mapData.fillMap(MapData.TYPE_NONE);
+        mapData.setGoal(19,13);
+    }
+    public void func2ButtonAction(ActionEvent event) {
+        outputAction("RESET");
+        mapData = new MapData(21,15);
+        chara = new MoveChara(1, 1, mapData);
+        mapPrint(chara, mapData);
+        //map2 = false;
+    }
+    public void func3ButtonAction(ActionEvent event) {
+        //mapStack = new StackPane();
+        Image goalImage = new Image("png/GOAL2.png");
+        ImageView goalImageView = new ImageView(goalImage);
+        mapStack.setAlignment(Pos.TOP_CENTER);
+        mapStack.getChildren().addAll(goalImageView);
+        //Stage st = new Stage();
+        //st.setScene(new Scene(mapStack));
+        mapStack.getChildren().add(goalImageView);
+        outputAction("GOAL");
+        
+    }
     public void func4ButtonAction(ActionEvent event) { }
 
     public void keyAction(KeyEvent event){

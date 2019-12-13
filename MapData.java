@@ -5,10 +5,14 @@ public class MapData {
     public static final int TYPE_NONE   = 0;
     public static final int TYPE_WALL   = 1;
     public static final int TYPE_OTHERS = 2;
+    public static final int TYPE_ITEM = 3;
+    public static final int TYPE_GOAL = 4;
     private static final String mapImageFiles[] = {
         "png/SPACE.png",
         "png/WALL.png",
-        "png/SPACE.png"  // not used
+        "png/SPACE.png",
+        "png/ITEM.png",
+        "png/GOAL.png"// not used
     };
 
     private Image[] mapImages;
@@ -18,9 +22,9 @@ public class MapData {
     private int height;
 
     MapData(int x, int y){
-        mapImages     = new Image[2];
+        mapImages     = new Image[mapImageFiles.length];
         mapImageViews = new ImageView[y][x];
-        for (int i=0; i<2; i++) {
+        for (int i=0; i<mapImageFiles.length; i++) {
             mapImages[i] = new Image(mapImageFiles[i]);
         }
 
@@ -30,6 +34,7 @@ public class MapData {
 
         fillMap(MapData.TYPE_WALL);
         digMap(1, 3);
+        setGoal(19,13);
         setImageViews();
     }
 
@@ -96,6 +101,14 @@ public class MapData {
 
             }
         }
+    }
+
+    /**
+     * 
+     * 
+     */
+    public void setGoal(int x,int y){
+        setMap(x,y,MapData.TYPE_GOAL);
     }
 
     public void printMap(){

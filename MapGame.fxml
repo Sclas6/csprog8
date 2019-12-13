@@ -29,6 +29,7 @@
     </HBox>
     <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" >
     </GridPane>
-
+    <StackPane fx:id="mapStack" prefWidth="80" prefHeight="80">
+    </StackPane>
   </children>
 </VBox>
