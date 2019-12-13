@@ -90,7 +90,7 @@ public class MapGameController implements Initializable {
        rightButtonAction();
 
     }
-    public void leftButtonAction(){   /**左に進む*/
+    public void leftButtonAction(){    /**左に進む*/
         chara.setCharaDir(MoveChara.TYPE_LEFT);
         chara.move( -1, 0);
         mapPrint(chara, mapData);
@@ -99,7 +99,7 @@ public class MapGameController implements Initializable {
         leftButtonAction();
     }
 
-    public void upButtonAction(){   /**上に進む*/
+    public void upButtonAction(){    /**上に進む*/
         outputAction("UP");
         chara.setCharaDir(MoveChara.TYPE_UP);
         chara.move( 0, -1);
