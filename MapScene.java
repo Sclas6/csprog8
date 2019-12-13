@@ -11,5 +11,4 @@ public class MapScene{
         stage.setScene(myScene);
         stage.show();
     }
-
 }
