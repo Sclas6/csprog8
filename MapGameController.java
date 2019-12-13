@@ -22,8 +22,9 @@ public class MapGameController implements Initializable {
     public GridPane mapGrid;
     public StackPane mapStack;
     public ImageView[] mapImageViews;
+    //For Goal Jadging
     public boolean isgoal = false;
-
+    //Making Goal Effects
     public Image goalImage = new Image("png/GOAL.png");
     public ImageView goalImageView = new ImageView(goalImage);
     public Button ranking = new Button("RANKING");
@@ -63,6 +64,7 @@ public class MapGameController implements Initializable {
         }
     }
 
+    //run when chara reachs goal
     public void goalAction(MoveChara c,MapData m){
         if (c.isGoal(m)==true && isgoal==false){
             isgoal = true;
@@ -70,6 +72,7 @@ public class MapGameController implements Initializable {
             mapStack.getChildren().addAll(goalImageView,ranking,next);
         }
     }
+    //initializing goal effects
     public void initGoalButton(){
         mapStack.setAlignment(goalImageView, Pos.CENTER);
         mapStack.setAlignment(ranking,Pos.BOTTOM_RIGHT);
@@ -81,24 +84,29 @@ public class MapGameController implements Initializable {
         next.setPrefWidth(60);
         next.setPrefHeight(8);
     }
-
+    //DEBUG THROUGH WALL
     public void func1ButtonAction(ActionEvent event) {
         mapData.fillMap(MapData.TYPE_NONE);
         mapData.setGoal(19,13);
     }
+    //DEBUG RESET
     public void func2ButtonAction(ActionEvent event) {
         outputAction("RESET");
         mapData = new MapData(21,15);
         chara = new MoveChara(1, 1, mapData);
+        isgoal = false;
+        mapStack.getChildren().removeAll(goalImageView,ranking,next);
         mapPrint(chara, mapData);
         //map2 = false;
     }
+    //DEBUG GOAL
     public void func3ButtonAction(ActionEvent event) {
-        initGoalButton();
-        mapStack.getChildren().addAll(goalImageView,ranking,next);
+        if(isgoal != true){
+            initGoalButton();
+            mapStack.getChildren().addAll(goalImageView,ranking,next);    
+        }
     }
     public void func4ButtonAction(ActionEvent event) {
-        mapStack.getChildren().removeAll(goalImageView,ranking,next);
     }
 
     public void keyAction(KeyEvent event){
@@ -130,6 +138,7 @@ public class MapGameController implements Initializable {
         chara.setCharaDir(MoveChara.TYPE_RIGHT);
         chara.move( 1, 0);
         mapPrint(chara, mapData);
+        goalAction(chara,mapData);
     }
     public void rightButtonAction(ActionEvent event) {
         rightButtonAction();

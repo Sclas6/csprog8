@@ -29,7 +29,7 @@ public class MoveChara {
     private int diffx   = 1;
     private int charaDir;
     public int item_count = 0;
-    public boolean goal = false;
+    public boolean isgoal = false;
 
     MoveChara(int startX, int startY, MapData mapData){
         this.mapData = mapData;
@@ -86,7 +86,7 @@ public class MoveChara {
     public int getItemCount(){
         return item_count;
     }
-
+    //With Items, chara can enter goal flag
     public boolean canGoal(){
         if (this.getItemCount() == 0){
             return true;
@@ -95,19 +95,19 @@ public class MoveChara {
             return false;
         }
     }
-
+    //return if chara is goal
     public boolean isGoal(MapData m){
         for(int y=0; y<m.getHeight(); y++){
             for(int x=0; x<m.getWidth(); x++){
-                if(m.getMap(getPosX(), getPosY()) == MapData.TYPE_GOAL && canGoal() == true && goal == false){
+                if(m.getMap(getPosX(), getPosY()) == MapData.TYPE_GOAL && canGoal() == true && isgoal == false){
                     System.out.print("GOAL");
-                    goal = true;
+                    isgoal = true;
                 }
             }
         }
-        return (goal==true)?true:false;
+        return (isgoal==true)?true:false;
     }
-
+    //Without Items, Can't Enter Goal 
     public boolean canMove(int dx, int dy){
         if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_WALL){
             return false;

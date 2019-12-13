@@ -103,10 +103,7 @@ public class MapData {
         }
     }
 
-    /**
-     * 
-     * 
-     */
+    //Making goal at x,y
     public void setGoal(int x,int y){
         setMap(x,y,MapData.TYPE_GOAL);
     }
