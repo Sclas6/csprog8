@@ -65,10 +65,9 @@ public class MapGameController implements Initializable {
 
     public void goalAction(MoveChara c,MapData m){
         if (c.isGoal(m)==true && isgoal==false){
-            goalImageView = new ImageView(goalImage);
-            mapStack.setAlignment(Pos.CENTER);
-            mapStack.getChildren().add(goalImageView);
             isgoal = true;
+            initGoalButton();
+            mapStack.getChildren().addAll(goalImageView,ranking,next);
         }
     }
     public void initGoalButton(){
@@ -87,6 +86,7 @@ public class MapGameController implements Initializable {
             mapData = new MapData(21,15);
             chara = new MoveChara(1, 1, mapData);
             mapPrint(chara, mapData);
+            isgoal = false;
         });
     }
 
