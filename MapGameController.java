@@ -115,6 +115,10 @@ public class MapGameController implements Initializable {
             downButtonAction();
         }else if (key == KeyCode.RIGHT){
             rightButtonAction();
+        }else if (key == KeyCode.LEFT){
+            leftButtonAction();
+        }else if (key == KeyCode.UP){
+            upButtonAction();
         }
     }
 
@@ -141,6 +145,25 @@ public class MapGameController implements Initializable {
         goalAction(chara,mapData);
     }
     public void rightButtonAction(ActionEvent event) {
-        rightButtonAction();
+       rightButtonAction();
+
+    }
+    public void leftButtonAction(){    /**左に進む*/
+        chara.setCharaDir(MoveChara.TYPE_LEFT);
+        chara.move( -1, 0);
+        mapPrint(chara, mapData);
+    }
+    public void leftButtonAction(ActionEvent event) {
+        leftButtonAction();
+    }
+
+    public void upButtonAction(){    /**上に進む*/
+        outputAction("UP");
+        chara.setCharaDir(MoveChara.TYPE_UP);
+        chara.move( 0, -1);
+        mapPrint(chara, mapData);
+    }
+    public void upButtonAction(ActionEvent event) {
+        upButtonAction();
     }
 }
