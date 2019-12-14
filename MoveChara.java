@@ -1,5 +1,7 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.geometry.Pos;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.animation.AnimationTimer;
 
@@ -26,6 +28,8 @@ public class MoveChara {
     private int count   = 0;
     private int diffx   = 1;
     private int charaDir;
+    public int item_count = 0;
+    public boolean isgoal = false;
 
     MoveChara(int startX, int startY, MapData mapData){
         this.mapData = mapData;
@@ -79,17 +83,44 @@ public class MoveChara {
         }
     }
 
+    public int getItemCount(){
+        return item_count;
+    }
+    //With Items, chara can enter goal flag
+    public boolean canGoal(){
+        if (this.getItemCount() == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    //return if chara is goal
+    public boolean isGoal(MapData m){
+        for(int y=0; y<m.getHeight(); y++){
+            for(int x=0; x<m.getWidth(); x++){
+                if(m.getMap(getPosX(), getPosY()) == MapData.TYPE_GOAL && canGoal() == true && isgoal == false){
+                    System.out.print("GOAL");
+                    isgoal = true;
+                }
+            }
+        }
+        return (isgoal==true)?true:false;
+    }
+    //Without Items, Can't Enter Goal 
     public boolean canMove(int dx, int dy){
         if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_WALL){
             return false;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_NONE){
             return true;
+        } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL){
+            return (canGoal()==true)?true:false;
         }
         return false;
     }
 
     public boolean move(int dx, int dy){
-        if (canMove(dx,dy)){
+        if (canMove(dx,dy)&&isGoal(mapData)==false){
             posX += dx;
             posY += dy;
             return true;
