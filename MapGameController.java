@@ -1,5 +1,6 @@
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.lang.SuppressWarnings;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -73,6 +74,7 @@ public class MapGameController implements Initializable {
         }
     }
     //initializing goal effects
+    @SuppressWarnings("static-access")
     public void initGoalButton(){
         mapStack.setAlignment(goalImageView, Pos.CENTER);
         mapStack.setAlignment(ranking,Pos.BOTTOM_RIGHT);
@@ -149,9 +151,11 @@ public class MapGameController implements Initializable {
 
     }
     public void leftButtonAction(){    /**左に進む*/
+        outputAction("DOWN");
         chara.setCharaDir(MoveChara.TYPE_LEFT);
         chara.move( -1, 0);
         mapPrint(chara, mapData);
+        goalAction(chara,mapData);
     }
     public void leftButtonAction(ActionEvent event) {
         leftButtonAction();
@@ -162,6 +166,7 @@ public class MapGameController implements Initializable {
         chara.setCharaDir(MoveChara.TYPE_UP);
         chara.move( 0, -1);
         mapPrint(chara, mapData);
+        goalAction(chara,mapData);
     }
     public void upButtonAction(ActionEvent event) {
         upButtonAction();
