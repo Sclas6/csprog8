@@ -56,7 +56,7 @@ public class MapGameController implements Initializable {
                 mapImageViews[index] = mapData.getImageView(x,y);
             }
         }
-        initGoalButton();
+        initViews();
         mapPrint(chara, mapData);
     }
 
@@ -112,7 +112,7 @@ public class MapGameController implements Initializable {
 
     //initializing goal effects
     @SuppressWarnings("static-access")
-    public void initGoalButton(){
+    public void initViews(){
         mapStack.setAlignment(goalImageView, Pos.CENTER);
         mapStack.setAlignment(ranking,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(next,Pos.BOTTOM_RIGHT);
@@ -139,10 +139,10 @@ public class MapGameController implements Initializable {
             outputAction("CLOSE RANKING");
             mapStack.getChildren().removeAll(scoreWindowView,viewRank,yourScore,close);
         });
-        viewRank.setFont(Font.loadFont("file:ラノベPOP.otf",28));
+        viewRank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
         viewRank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #000;");
         viewRank.setFill(Color.WHITE);
-        yourScore.setFont(Font.loadFont("file:ラノベPOP.otf",40));
+        yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",40));
         yourScore.setTextFill(Color.WHITE);
     }
 
@@ -164,7 +164,7 @@ public class MapGameController implements Initializable {
     //DEBUG GOAL
     public void func3ButtonAction(ActionEvent event) {
         if(isgoal != true){
-            initGoalButton();
+            initViews();
             mapStack.getChildren().addAll(goalImageView,ranking,next);
             isgoal = true;
         }

@@ -20,7 +20,6 @@ public class MoveChara {
     private int posY;
 
     private MapData mapData;
-    private MapGameController cont;
 
     private Image[][] charaImages;
     private ImageView[] charaImageViews;
