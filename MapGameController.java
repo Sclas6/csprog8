@@ -102,23 +102,11 @@ public class MapGameController implements Initializable {
         return score;
     }
 
-    @SuppressWarnings("static-access")
     public void viewRanking(){
         mapStack.getChildren().removeAll(scoreWindowView,viewRank,yourScore);
-        mapStack.setAlignment(viewRank,Pos.CENTER);
-        mapStack.setAlignment(yourScore,Pos.TOP_CENTER);
-        mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
-        mapStack.setMargin(yourScore, new Insets(10,0,0,0));
-        mapStack.setMargin(viewRank, new Insets(38,0,0,0));
         String ranking = CsvManager.getRanking();
-        viewRank.setFont(Font.loadFont("file:ラノベPOP.otf",28));
-        viewRank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #000;");
-        viewRank.setFill(Color.WHITE);
-        viewRank.setText(ranking);
-        yourScore.setFont(Font.loadFont("file:ラノベPOP.otf",40));
-        yourScore.setTextFill(Color.WHITE);
         yourScore.setText("Your Score: "+Integer.toString(score));
-        
+        viewRank.setText(ranking);
         mapStack.getChildren().addAll(scoreWindowView,viewRank,yourScore,close);
     }
 
@@ -129,9 +117,14 @@ public class MapGameController implements Initializable {
         mapStack.setAlignment(ranking,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(next,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(close,Pos.BOTTOM_RIGHT);
+        mapStack.setAlignment(viewRank,Pos.CENTER);
+        mapStack.setAlignment(yourScore,Pos.TOP_CENTER);
         mapStack.setMargin(ranking, new Insets(90,140,88,0));
         mapStack.setMargin(next, new Insets(90,65,88,0));
         mapStack.setMargin(close, new Insets(0,40,32,0));
+        mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
+        mapStack.setMargin(yourScore, new Insets(10,0,0,0));
+        mapStack.setMargin(viewRank, new Insets(38,0,0,0));
         ranking.setPrefWidth(80);
         ranking.setPrefHeight(8);
         ranking.setOnAction((ActionEvent)-> {
@@ -146,6 +139,11 @@ public class MapGameController implements Initializable {
             outputAction("CLOSE RANKING");
             mapStack.getChildren().removeAll(scoreWindowView,viewRank,yourScore,close);
         });
+        viewRank.setFont(Font.loadFont("file:ラノベPOP.otf",28));
+        viewRank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #000;");
+        viewRank.setFill(Color.WHITE);
+        yourScore.setFont(Font.loadFont("file:ラノベPOP.otf",40));
+        yourScore.setTextFill(Color.WHITE);
     }
 
     //DEBUG THROUGH WALL
