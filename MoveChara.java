@@ -20,6 +20,7 @@ public class MoveChara {
     private int posY;
 
     private MapData mapData;
+    private MapGameController cont;
 
     private Image[][] charaImages;
     private ImageView[] charaImageViews;
@@ -100,7 +101,6 @@ public class MoveChara {
         for(int y=0; y<m.getHeight(); y++){
             for(int x=0; x<m.getWidth(); x++){
                 if(m.getMap(getPosX(), getPosY()) == MapData.TYPE_GOAL && canGoal() == true && isgoal == false){
-                    System.out.print("GOAL");
                     isgoal = true;
                 }
             }
