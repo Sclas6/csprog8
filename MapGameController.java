@@ -1,6 +1,10 @@
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.lang.SuppressWarnings;
+import java.lang.*;
+import java.awt.*;
+//import java.util.Calendar;
+import java.sql.Timestamp; // score data para //
+import java.text.SimpleDateFormat; // score data format //
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -11,11 +15,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
 
 public class MapGameController implements Initializable {
     public MapData mapData;
@@ -27,10 +34,16 @@ public class MapGameController implements Initializable {
     public boolean isgoal = false;
     //Making Goal Effects
     public Image goalImage = new Image("png/GOAL.png");
+    public Image scoreWindow = new Image("png/ScoreWindow.png");
     public ImageView goalImageView = new ImageView(goalImage);
+    public ImageView scoreWindowView = new ImageView(scoreWindow);
     public Button ranking = new Button("RANKING");
     public Button next = new Button("NEXT");
+    public Button close = new Button("CLOSE");
+    public Label yourScore = new Label("");
+    public Text rank = new Text("");
 //    public Group[] mapGroups;
+    public static int score;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -44,6 +57,7 @@ public class MapGameController implements Initializable {
                 mapImageViews[index] = mapData.getImageView(x,y);
             }
         }
+        initViews();
         mapPrint(chara, mapData);
     }
 
@@ -69,22 +83,73 @@ public class MapGameController implements Initializable {
     public void goalAction(MoveChara c,MapData m){
         if (c.isGoal(m)==true && isgoal==false){
             isgoal = true;
-            initGoalButton();
+            makeScore();
             mapStack.getChildren().addAll(goalImageView,ranking,next);
+            CsvManager.exportCsv();
+
         }
     }
+    // Score format //
+    public static String getScoreData(){
+      //Calendar cl = Calendar.getInstance();
+      Timestamp ts = new Timestamp(System.currentTimeMillis());
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
+      String str = sdf.format(ts);
+      String scoreData = MapGame.getName() + "," + getScore() + "," + str;
+      return scoreData;
+    }
+
+    // make score //
+    public void makeScore(){
+      score = (int)(Math.random()*100000);
+    }
+    // reuturn //
+    public static int getScore(){
+        return score;
+    }
+
+    public void viewRanking(){
+       mapStack.getChildren().removeAll(scoreWindowView, rank, yourScore);
+       String ranking = CsvManager.getRanking();
+       yourScore.setText("Your Score: " + Integer.toString(score));
+       rank.setText(ranking);
+       mapStack.getChildren().addAll(scoreWindowView, rank, yourScore, close);
+    }
+
     //initializing goal effects
     @SuppressWarnings("static-access")
-    public void initGoalButton(){
+    public void initViews(){
         mapStack.setAlignment(goalImageView, Pos.CENTER);
         mapStack.setAlignment(ranking,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(next,Pos.BOTTOM_RIGHT);
+        mapStack.setAlignment(close,Pos.BOTTOM_RIGHT);
+        mapStack.setAlignment(yourScore,Pos.TOP_CENTER);
+        mapStack.setAlignment(rank,Pos.CENTER);
         mapStack.setMargin(ranking, new Insets(90,140,88,0));
         mapStack.setMargin(next, new Insets(90,65,88,0));
+        mapStack.setMargin(close, new Insets(0,40,30,0));
+        mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
+        mapStack.setMargin(yourScore, new Insets(10,0,0,0));
+        mapStack.setMargin(rank, new Insets(40,0,0,0));
         ranking.setPrefWidth(80);
         ranking.setPrefHeight(8);
+        ranking.setOnAction((ActionEvent)-> {
+            outputAction("ranking");
+            viewRanking();
+        });
+        close.setPrefWidth(70);
+        close.setPrefHeight(4);
+        close.setOnAction((ActionEvent)->{
+            outputAction("CLOSE ranking");
+            mapStack.getChildren().removeAll(scoreWindowView,rank,yourScore,close);
+        });
         next.setPrefWidth(60);
         next.setPrefHeight(8);
+        rank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
+        rank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #00CC00;");
+        rank.setFill(Color.WHITE);
+        yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",40));
+        yourScore.setTextFill(Color.WHITE);
     }
     //DEBUG THROUGH WALL
     public void func1ButtonAction(ActionEvent event) {
@@ -104,11 +169,13 @@ public class MapGameController implements Initializable {
     //DEBUG GOAL
     public void func3ButtonAction(ActionEvent event) {
         if(isgoal != true){
-            initGoalButton();
-            mapStack.getChildren().addAll(goalImageView,ranking,next);    
+            initViews();
+            mapStack.getChildren().addAll(goalImageView,ranking,next);
+            isgoal = true;
         }
     }
     public void func4ButtonAction(ActionEvent event) {
+        outputAction(MapGame.getName());
     }
 
     public void keyAction(KeyEvent event){
