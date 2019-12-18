@@ -2,8 +2,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.lang.*;
 import java.awt.*;
-//import java.util.Calendar;
-import java.sql.Timestamp; // score data para //
+import java.util.Calendar; // score data para //
 import java.text.SimpleDateFormat; // score data format //
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -91,10 +90,9 @@ public class MapGameController implements Initializable {
     }
     // Score format //
     public static String getScoreData(){
-      //Calendar cl = Calendar.getInstance();
-      Timestamp ts = new Timestamp(System.currentTimeMillis());
+      Calendar cl = Calendar.getInstance();
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
-      String str = sdf.format(ts);
+      String str = sdf.format(cl);
       String scoreData = MapGame.getName() + "," + getScore() + "," + str;
       return scoreData;
     }
@@ -127,10 +125,10 @@ public class MapGameController implements Initializable {
         mapStack.setAlignment(rank,Pos.CENTER);
         mapStack.setMargin(ranking, new Insets(90,140,88,0));
         mapStack.setMargin(next, new Insets(90,65,88,0));
-        mapStack.setMargin(close, new Insets(0,40,30,0));
+        mapStack.setMargin(close, new Insets(0,40,32,0));
         mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
         mapStack.setMargin(yourScore, new Insets(10,0,0,0));
-        mapStack.setMargin(rank, new Insets(40,0,0,0));
+        mapStack.setMargin(rank, new Insets(38,0,0,0));
         ranking.setPrefWidth(80);
         ranking.setPrefHeight(8);
         ranking.setOnAction((ActionEvent)-> {
@@ -143,8 +141,16 @@ public class MapGameController implements Initializable {
             outputAction("CLOSE ranking");
             mapStack.getChildren().removeAll(scoreWindowView,rank,yourScore,close);
         });
-        next.setPrefWidth(60);
-        next.setPrefHeight(8);
+        next.setPrefWidth(70);
+        next.setPrefHeight(4);
+        next.setOnAction((ActionEvent)->{
+           outputAction("NEXT MAP");
+           mapData = new MapData(21,15);
+           chara = new MoveChara(1, 1, mapData);
+           isgoal = false;
+           mapStack.getChildren().removeAll(goalImageView,ranking,next);
+           mapPrint(chara, mapData);
+        });
         rank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
         rank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #00CC00;");
         rank.setFill(Color.WHITE);
