@@ -43,6 +43,8 @@ public class MapGameController implements Initializable {
     public Text rank = new Text("");
 //    public Group[] mapGroups;
     public static int score;
+    public static int item_count;
+    public Label label1;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -64,6 +66,7 @@ public class MapGameController implements Initializable {
         int cx = c.getPosX();
         int cy = c.getPosY();
         mapGrid.getChildren().clear();
+        label1.setText(MoveChara.message);
         for(int y=0; y<mapData.getHeight(); y++){
             for(int x=0; x<mapData.getWidth(); x++){
                 int index = y*mapData.getWidth() + x;
@@ -144,18 +147,25 @@ public class MapGameController implements Initializable {
         next.setPrefWidth(70);
         next.setPrefHeight(4);
         next.setOnAction((ActionEvent)->{
-           outputAction("NEXT MAP");
-           mapData = new MapData(21,15);
-           chara = new MoveChara(1, 1, mapData);
-           isgoal = false;
-           mapStack.getChildren().removeAll(goalImageView,ranking,next);
-           mapPrint(chara, mapData);
+            outputAction("NEXT MAP");
+            mapData = new MapData(21,15);
+            chara = new MoveChara(1, 1, mapData);
+            isgoal = false;
+            initMap();
+            mapStack.getChildren().removeAll(goalImageView,ranking,next);
+            mapPrint(chara, mapData);
         });
         rank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
         rank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #00CC00;");
         rank.setFill(Color.WHITE);
         yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",40));
         yourScore.setTextFill(Color.WHITE);
+        label1.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
+    }
+    public void initMap(){
+        initViews();
+        MoveChara.item_count=0;
+        MoveChara.message = "アイテム数: 0";
     }
     //DEBUG THROUGH WALL
     public void func1ButtonAction(ActionEvent event) {
@@ -168,6 +178,9 @@ public class MapGameController implements Initializable {
         mapData = new MapData(21,15);
         chara = new MoveChara(1, 1, mapData);
         isgoal = false;
+        //MoveChara.message = "a";
+        //MoveChara.item_count = 0;
+        initMap();
         mapStack.getChildren().removeAll(goalImageView,ranking,next);
         mapPrint(chara, mapData);
         //map2 = false;

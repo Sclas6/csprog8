@@ -28,8 +28,9 @@ public class MoveChara {
     private int count   = 0;
     private int diffx   = 1;
     private int charaDir;
-    public int item_count = 0;
+    public static int item_count = 0;
     public boolean isgoal = false;
+    public static String message="アイテム数: 0";
 
     MoveChara(int startX, int startY, MapData mapData){
         this.mapData = mapData;
@@ -88,7 +89,7 @@ public class MoveChara {
     }
     //With Items, chara can enter goal flag
     public boolean canGoal(){
-        if (this.getItemCount() == 0){
+        if (this.getItemCount() == MapData.item_count){
             return true;
         }
         else{
@@ -115,6 +116,8 @@ public class MoveChara {
             return true;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL){
             return (canGoal()==true)?true:false;
+        } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_ITEM){
+        return true;
         }
         return false;
     }
@@ -123,8 +126,19 @@ public class MoveChara {
         if (canMove(dx,dy)&&isGoal(mapData)==false){
             posX += dx;
             posY += dy;
+            if(mapData.getMap(posX,posY)==MapData.TYPE_ITEM){
+                item_count++;
+                mapData.setMap(posX,posY,MapData.TYPE_NONE);
+                mapData.setImageViews();
+                message = "アイテム数: "+Integer.toString(MoveChara.item_count);
+                System.out.println(item_count);
+            }
             return true;
-        }else {
+        }else if(mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL&&canGoal()==false){
+            message = "アイテムが足りません!";
+            return false;
+        }
+        else {
             return false;
         }
     }

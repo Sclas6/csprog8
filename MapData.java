@@ -20,6 +20,7 @@ public class MapData {
     private int[][] maps;
     private int width;
     private int height;
+    public static int item_count;
 
     MapData(int x, int y){
         mapImages     = new Image[mapImageFiles.length];
@@ -31,10 +32,13 @@ public class MapData {
         width  = x;
         height = y;
         maps = new int[y][x];
+        int i=0;
+        i = ((int)(Math.random()*100)%3==0)?((int)(Math.random()*100)%3==0)?3:4:5;
 
         fillMap(MapData.TYPE_WALL);
         digMap(1, 3);
         setGoal(19,13);
+        setItem(i);
         setImageViews();
     }
 
@@ -106,6 +110,21 @@ public class MapData {
     //Making goal at x,y
     public void setGoal(int x,int y){
         setMap(x,y,MapData.TYPE_GOAL);
+    }
+
+    public void setItem(int i){
+        item_count = 0;
+        while(item_count<i){
+            for(int y = 0;y<getHeight();y++){
+                for(int x = 0;x<getWidth();x++){
+                    if(getMap(x,y)==MapData.TYPE_NONE&&(int)(Math.random()*100)%40==0&&item_count<i&&(x!=1&&y!=1)){
+                        item_count++;
+                        setMap(x,y,MapData.TYPE_ITEM);
+                    }
+                    //System.out.println(count);
+                }
+            }
+        }
     }
 
     public void printMap(){
