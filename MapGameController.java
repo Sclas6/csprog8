@@ -44,8 +44,10 @@ public class MapGameController implements Initializable {
     //Making Goal Effects
     public Image goalImage = new Image("png/GOAL.png");
     public Image scoreWindow = new Image("png/ScoreWindow.png");
+    public Image rem = new Image("png/REMNANT.png");
     public ImageView goalImageView = new ImageView(goalImage);
     public ImageView scoreWindowView = new ImageView(scoreWindow);
+    public ImageView remnant = new ImageView(rem);
     public Button ranking = new Button("RANKING");
     public Button next = new Button("NEXT");
     public Button close = new Button("CLOSE");
@@ -74,8 +76,8 @@ public class MapGameController implements Initializable {
             }
         }
         initViews();
-        mapPrint(chara2, mapData2);
         map2 = true;
+        mapPrint(chara2, mapData2);
     }
 
     public void mapPrint(MoveChara c, MapData m){
@@ -95,6 +97,9 @@ public class MapGameController implements Initializable {
                     mapGrid.add(mapImageViews[index], x, y);
                 }
             }
+        }
+        if(map2==false){
+            mapGrid.add(remnant,chara2.getPosX(),chara2.getPosY());
         }
     }
 
