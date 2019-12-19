@@ -60,7 +60,7 @@ public class CsvManager{
          BufferedReader br = new BufferedReader(is);
          int i = 0;
          String line;
-         while((line = br.readLine()) != null && i<10){
+         while((line = br.readLine()) != null && i<5){
              str += line;
              str += "\n";
              i++;
