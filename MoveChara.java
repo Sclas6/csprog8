@@ -54,6 +54,10 @@ public class MoveChara {
         setCharaDir(TYPE_DOWN);
     }
 
+    public String getMessage(){
+        return message;
+    }
+
     public void changeCount(){
         count = count + diffx;
         if (count > 2) {
@@ -84,12 +88,15 @@ public class MoveChara {
         }
     }
 
-    public int getItemCount(){
+    public static int getItemCount(){
         return item_count;
+    }
+    public static void setItem(int i){
+        item_count = i;
     }
     //With Items, chara can enter goal flag
     public boolean canGoal(){
-        if (this.getItemCount() == MapData.item_count){
+        if (getItemCount() == mapData.getItem()){
             return true;
         }
         else{
@@ -131,7 +138,6 @@ public class MoveChara {
                 mapData.setMap(posX,posY,MapData.TYPE_NONE);
                 mapData.setImageViews();
                 message = "アイテム数: "+Integer.toString(MoveChara.item_count);
-                System.out.println(item_count);
             }
             return true;
         }else if(mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL&&canGoal()==false){
