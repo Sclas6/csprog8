@@ -42,6 +42,8 @@ public class MapGameController implements Initializable {
     public Label yourScore = new Label("");
     public Text viewRank = new Text("");
     public static int score;
+    public static int item_count;
+    public Label label1;
 //    public Group[] mapGroups;
 
     @Override
@@ -64,6 +66,9 @@ public class MapGameController implements Initializable {
         int cx = c.getPosX();
         int cy = c.getPosY();
         mapGrid.getChildren().clear();
+        mapImageViews = new ImageView[m.getHeight()*m.getWidth()];
+        //label1.setText("アイテム数: "+Integer.toString(MoveChara.item_count));
+        label1.setText(MoveChara.message);
         for(int y=0; y<mapData.getHeight(); y++){
             for(int x=0; x<mapData.getWidth(); x++){
                 int index = y*mapData.getWidth() + x;
@@ -140,6 +145,7 @@ public class MapGameController implements Initializable {
             mapStack.getChildren().removeAll(scoreWindowView,viewRank,yourScore,close);
         });
         viewRank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
+        label1.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
         viewRank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #000;");
         viewRank.setFill(Color.WHITE);
         yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",40));
