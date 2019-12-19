@@ -2,7 +2,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.lang.*;
 import java.awt.*;
-import java.util.Calendar; // score data para //
+import java.sql.Timestamp; // score data para //
 import java.text.SimpleDateFormat; // score data format //
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -90,9 +90,9 @@ public class MapGameController implements Initializable {
     }
     // Score format //
     public static String getScoreData(){
-      Calendar cl = Calendar.getInstance();
+      Timestamp ts = new Timestamp(System.currentTimeMillis());
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
-      String str = sdf.format(cl);
+      String str = sdf.format(ts);
       String scoreData = MapGame.getName() + "," + getScore() + "," + str;
       return scoreData;
     }
