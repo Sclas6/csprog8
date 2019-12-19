@@ -130,8 +130,8 @@ public class MapGameController implements Initializable {
         mapStack.setMargin(next, new Insets(90,65,88,0));
         mapStack.setMargin(close, new Insets(0,40,32,0));
         mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
-        mapStack.setMargin(yourScore, new Insets(10,0,0,0));
-        mapStack.setMargin(rank, new Insets(38,0,0,0));
+        mapStack.setMargin(yourScore, new Insets(50,0,0,0));
+        mapStack.setMargin(rank, new Insets(70,0,0,0));
         ranking.setPrefWidth(80);
         ranking.setPrefHeight(8);
         ranking.setOnAction((ActionEvent)-> {
@@ -158,7 +158,7 @@ public class MapGameController implements Initializable {
         rank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
         rank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #00CC00;");
         rank.setFill(Color.WHITE);
-        yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",40));
+        yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",60));
         yourScore.setTextFill(Color.WHITE);
         label1.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
     }
