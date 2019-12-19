@@ -2,19 +2,19 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.lang.*;
 import java.awt.*;
-import java.sql.Timestamp; // score data para //
-import java.text.SimpleDateFormat; // score data format //
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
@@ -40,9 +40,11 @@ public class MapGameController implements Initializable {
     public Button next = new Button("NEXT");
     public Button close = new Button("CLOSE");
     public Label yourScore = new Label("");
-    public Text rank = new Text("");
-//    public Group[] mapGroups;
+    public Text viewRank = new Text("");
     public static int score;
+    public static int item_count;
+    public Label label1;
+//    public Group[] mapGroups;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -64,6 +66,9 @@ public class MapGameController implements Initializable {
         int cx = c.getPosX();
         int cy = c.getPosY();
         mapGrid.getChildren().clear();
+        mapImageViews = new ImageView[m.getHeight()*m.getWidth()];
+        //label1.setText("アイテム数: "+Integer.toString(MoveChara.item_count));
+        label1.setText(MoveChara.message);
         for(int y=0; y<mapData.getHeight(); y++){
             for(int x=0; x<mapData.getWidth(); x++){
                 int index = y*mapData.getWidth() + x;
@@ -85,33 +90,29 @@ public class MapGameController implements Initializable {
             makeScore();
             mapStack.getChildren().addAll(goalImageView,ranking,next);
             CsvManager.exportCsv();
-
         }
     }
-    // Score format //
-    public static String getScoreData(){
-      Timestamp ts = new Timestamp(System.currentTimeMillis());
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
-      String str = sdf.format(ts);
-      String scoreData = MapGame.getName() + "," + getScore() + "," + str;
-      return scoreData;
-    }
 
-    // make score //
-    public void makeScore(){
-      score = (int)(Math.random()*100000);
+    public String getScoreData(){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
+        String str = sdf.format(timestamp);
+        String scoreData = MapGame.getName() + "," + getScore() + "," + str;
+        return scoreData;
     }
-    // reuturn //
-    public static int getScore(){
+    public void makeScore(){
+        score = (int)(Math.random()*100000);
+    }
+    public int getScore(){
         return score;
     }
 
     public void viewRanking(){
-       mapStack.getChildren().removeAll(scoreWindowView, rank, yourScore);
-       String ranking = CsvManager.getRanking();
-       yourScore.setText("Your Score: " + Integer.toString(score));
-       rank.setText(ranking);
-       mapStack.getChildren().addAll(scoreWindowView, rank, yourScore, close);
+        mapStack.getChildren().removeAll(scoreWindowView,viewRank,yourScore);
+        String ranking = CsvManager.getRanking();
+        yourScore.setText("Your Score: "+Integer.toString(score));
+        viewRank.setText(ranking);
+        mapStack.getChildren().addAll(scoreWindowView,viewRank,yourScore,close);
     }
 
     //initializing goal effects
@@ -121,42 +122,36 @@ public class MapGameController implements Initializable {
         mapStack.setAlignment(ranking,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(next,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(close,Pos.BOTTOM_RIGHT);
+        mapStack.setAlignment(viewRank,Pos.CENTER);
         mapStack.setAlignment(yourScore,Pos.TOP_CENTER);
-        mapStack.setAlignment(rank,Pos.CENTER);
         mapStack.setMargin(ranking, new Insets(90,140,88,0));
         mapStack.setMargin(next, new Insets(90,65,88,0));
         mapStack.setMargin(close, new Insets(0,40,32,0));
         mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
         mapStack.setMargin(yourScore, new Insets(10,0,0,0));
-        mapStack.setMargin(rank, new Insets(38,0,0,0));
+        mapStack.setMargin(viewRank, new Insets(38,0,0,0));
         ranking.setPrefWidth(80);
         ranking.setPrefHeight(8);
         ranking.setOnAction((ActionEvent)-> {
-            outputAction("ranking");
+            outputAction("RANKING");
             viewRanking();
         });
+        next.setPrefWidth(60);
+        next.setPrefHeight(8);
         close.setPrefWidth(70);
         close.setPrefHeight(4);
         close.setOnAction((ActionEvent)->{
-            outputAction("CLOSE ranking");
-            mapStack.getChildren().removeAll(scoreWindowView,rank,yourScore,close);
+            outputAction("CLOSE RANKING");
+            mapStack.getChildren().removeAll(scoreWindowView,viewRank,yourScore,close);
         });
-        next.setPrefWidth(70);
-        next.setPrefHeight(4);
-        next.setOnAction((ActionEvent)->{
-           outputAction("NEXT MAP");
-           mapData = new MapData(21,15);
-           chara = new MoveChara(1, 1, mapData);
-           isgoal = false;
-           mapStack.getChildren().removeAll(goalImageView,ranking,next);
-           mapPrint(chara, mapData);
-        });
-        rank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
-        rank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #00CC00;");
-        rank.setFill(Color.WHITE);
+        viewRank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
+        label1.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
+        viewRank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #000;");
+        viewRank.setFill(Color.WHITE);
         yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",40));
         yourScore.setTextFill(Color.WHITE);
     }
+
     //DEBUG THROUGH WALL
     public void func1ButtonAction(ActionEvent event) {
         mapData.fillMap(MapData.TYPE_NONE);
@@ -168,7 +163,7 @@ public class MapGameController implements Initializable {
         mapData = new MapData(21,15);
         chara = new MoveChara(1, 1, mapData);
         isgoal = false;
-        mapStack.getChildren().removeAll(goalImageView,ranking,next);
+        mapStack.getChildren().removeAll(goalImageView,ranking,next,viewRank,yourScore,scoreWindowView);
         mapPrint(chara, mapData);
         //map2 = false;
     }
@@ -220,7 +215,7 @@ public class MapGameController implements Initializable {
         goalAction(chara,mapData);
     }
     public void rightButtonAction(ActionEvent event) {
-       rightButtonAction();
+        rightButtonAction();
 
     }
     public void leftButtonAction(){    /**左に進む*/
