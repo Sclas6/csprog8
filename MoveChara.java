@@ -122,7 +122,8 @@ public class MoveChara {
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_NONE){
             return true;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL){
-            return (canGoal()==true)?true:false;
+            //return (canGoal()==true)?true:false;
+            return true;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_ITEM){
         return true;
         }

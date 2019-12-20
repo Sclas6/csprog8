@@ -1,5 +1,5 @@
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.lang.*;
 import java.awt.*;
 import java.sql.Timestamp; // score data para //
@@ -19,10 +19,8 @@ import javafx.stage.Stage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
-import java.util.*;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.util.Duration;
@@ -39,8 +37,8 @@ public class MapGameController implements Initializable {
     public ImageView[] mapImageViews;
     //For Goal Jadging
     public boolean isgoal = false;
-
-    public static boolean map2 = false;
+    //map player seeing
+    public static boolean map2;
     //Making Goal Effects
     public Image goalImage = new Image("png/GOAL.png");
     public Image scoreWindow = new Image("png/ScoreWindow.png");
@@ -58,8 +56,6 @@ public class MapGameController implements Initializable {
     public static int item_count;
     public Label label1;
 
-    public Timeline timeline;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         mapData = new MapData(21,15,-1);
@@ -76,8 +72,8 @@ public class MapGameController implements Initializable {
             }
         }
         initViews();
-        map2 = true;
-        mapPrint(chara2, mapData2);
+        map2 = false;
+        mapPrint(chara, mapData);
     }
 
     public void mapPrint(MoveChara c, MapData m){
@@ -98,7 +94,7 @@ public class MapGameController implements Initializable {
                 }
             }
         }
-        if(map2==false){
+        if(map2==false && (chara.getPosX()*chara.getPosY()!=chara2.getPosX()*chara2.getPosY())){
             mapGrid.add(remnant,chara2.getPosX(),chara2.getPosY());
         }
     }
@@ -183,7 +179,6 @@ public class MapGameController implements Initializable {
         label1.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
     }
     public void resetMap(){
-        timeline.stop();
         outputAction("RESET");
         initViews();
         mapData = new MapData(21,15,-1);
@@ -205,74 +200,89 @@ public class MapGameController implements Initializable {
     }
     //DEBUG RESET
     public void func2ButtonAction(ActionEvent event) {
-        resetMap();
-        mapPrint(chara2, mapData2);
-        map2 = true;
+        if(move == false){
+            resetMap();
+            mapPrint(chara, mapData);
+            map2 = false;
+        }
     }
     //DEBUG GOAL
+    public Timeline timeline;
+    public int tmpx,tmpy;
+    public boolean move = false;
     public void func3ButtonAction(ActionEvent event) {
-        map2 = false;
-        mapPrint(chara, mapData);
-        timeline = new Timeline(
-            new KeyFrame(
-                new Duration(600),//1000ミリ秒
-                new EventHandler<ActionEvent>(){
-                    @Override
-                    public void handle(ActionEvent event){
-                        int dx,dy;
-                        dx = chara2.getPosX()-chara.getPosX();
-                        dy = chara2.getPosY()-chara.getPosY();
-                        System.out.println("( "+dx+","+dy+" )");
-                            if(Math.abs(dx)>Math.abs(dy)){
-                                if(dx>0 &&mapData.getMap(chara.getPosX() + 1,chara.getPosY())!=MapData.TYPE_WALL){
-                                    chara.setCharaDir(MoveChara.TYPE_RIGHT);
-                                    chara.move(1, 0);
-                                }
-                                else if(dx<0 &&mapData.getMap(chara.getPosX() - 1,chara.getPosY())!=MapData.TYPE_WALL){
-                                    chara.setCharaDir(MoveChara.TYPE_LEFT);
-                                    chara.move(-1, 0);
-                                }
-                                else if(dy>0){
-                                    chara.setCharaDir(MoveChara.TYPE_DOWN);
-                                    chara.move(0, 1);
-                                }
-                                else if(dy<0){
-                                    chara.setCharaDir(MoveChara.TYPE_UP);
-                                    chara.move(0,-1);
-                                }
+        if(map2 == true){
+            map2 = false;
+            move = true;
+            mapPrint(chara, mapData);
+            timeline = new Timeline(
+                new KeyFrame(
+                    new Duration(200),//1000ミリ秒
+                    new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent event){
+                            int dx,dy;
+                            dx = chara2.getPosX()-chara.getPosX();
+                            dy = chara2.getPosY()-chara.getPosY();
+                            if(dx==tmpx&&dy==tmpy){
+                                timeline.stop();
+                                move = false;
                             }
-                            else{
-                                if(dy>0&&mapData.getMap(chara.getPosX(),chara.getPosY()+1)!=MapData.TYPE_WALL){
-                                    chara.setCharaDir(MoveChara.TYPE_DOWN);
-                                    chara.move(0, 1);
+                            System.out.println("( "+dx+","+dy+" )");
+                                if(Math.abs(dx)>Math.abs(dy)){
+                                    if(dx>0 &&mapData.getMap(chara.getPosX() + 1,chara.getPosY())!=MapData.TYPE_WALL){
+                                        chara.setCharaDir(MoveChara.TYPE_RIGHT);
+                                        chara.move(1, 0);
+                                    }
+                                    else if(dx<0 &&mapData.getMap(chara.getPosX() - 1,chara.getPosY())!=MapData.TYPE_WALL){
+                                        chara.setCharaDir(MoveChara.TYPE_LEFT);
+                                        chara.move(-1, 0);
+                                    }
+                                    else if(dy>0){
+                                        chara.setCharaDir(MoveChara.TYPE_DOWN);
+                                        chara.move(0, 1);
+                                    }
+                                    else if(dy<0){
+                                        chara.setCharaDir(MoveChara.TYPE_UP);
+                                        chara.move(0,-1);
+                                    }
                                 }
-                                else if(dy<0&&mapData.getMap(chara.getPosX(),chara.getPosY()-1)!=MapData.TYPE_WALL){
-                                    chara.setCharaDir(MoveChara.TYPE_UP);
-                                    chara.move(0,-1);
+                                else{
+                                    if(dy>0&&mapData.getMap(chara.getPosX(),chara.getPosY()+1)!=MapData.TYPE_WALL){
+                                        chara.setCharaDir(MoveChara.TYPE_DOWN);
+                                        chara.move(0, 1);
+                                    }
+                                    else if(dy<0&&mapData.getMap(chara.getPosX(),chara.getPosY()-1)!=MapData.TYPE_WALL){
+                                        chara.setCharaDir(MoveChara.TYPE_UP);
+                                        chara.move(0,-1);
+                                    }
+                                    else if(dx>0){
+                                        chara.setCharaDir(MoveChara.TYPE_RIGHT);
+                                        chara.move(1, 0);
+                                    }
+                                    else if(dx<0){
+                                        chara.setCharaDir(MoveChara.TYPE_LEFT);
+                                        chara.move(-1, 0);
+                                    }
                                 }
-                                else if(dx>0){
-                                    chara.setCharaDir(MoveChara.TYPE_RIGHT);
-                                    chara.move(1, 0);
-                                }
-                                else if(dx<0){
-                                    chara.setCharaDir(MoveChara.TYPE_LEFT);
-                                    chara.move(-1, 0);
-                                }
-                            }
-                            mapPrint(chara, mapData);
-                            goalAction(chara, mapData);
+                                mapPrint(chara, mapData);
+                                goalAction(chara, mapData);
+                                tmpx = dx;
+                                tmpy = dy;
+                        }
                     }
-                }
-            )
-        );
-        //タイマーの開始
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+                )
+            );
+            //タイマーの開始
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
+        }
     }
     public void func4ButtonAction(ActionEvent event) {
-        timeline.stop();
-        map2 = true;
-        mapPrint(chara2, mapData2);
+        if(move == false){
+            map2 = true;
+            mapPrint(chara2, mapData2);
+        }
     }
 
     public void keyAction(KeyEvent event){
@@ -291,46 +301,51 @@ public class MapGameController implements Initializable {
     public void outputAction(String actionString) {
         System.out.println("Select Action: " + actionString);
     }
-
     public void downButtonAction(){
-        outputAction("DOWN");
-        chara2.setCharaDir(MoveChara.TYPE_DOWN);
-        chara2.move(0, 1);
-        mapPrint(chara2, mapData2);
-        goalAction(chara2, mapData2);
+        if(map2 == true){
+            outputAction("DOWN");
+            chara2.setCharaDir(MoveChara.TYPE_DOWN);
+            chara2.move(0, 1);
+            mapPrint(chara2, mapData2);
+            goalAction(chara2, mapData2);
+        }
     }
     public void downButtonAction(ActionEvent event) {
         downButtonAction();
     }
-
     public void rightButtonAction(){
-        outputAction("RIGHT");
-        chara2.setCharaDir(MoveChara.TYPE_RIGHT);
-        chara2.move( 1, 0);
-        mapPrint(chara2, mapData2);
-        goalAction(chara2,mapData2);
+        if(map2==true){
+            outputAction("RIGHT");
+            chara2.setCharaDir(MoveChara.TYPE_RIGHT);
+            chara2.move(1, 0);
+            mapPrint(chara2, mapData2);
+            goalAction(chara2,mapData2);
+        }
     }
     public void rightButtonAction(ActionEvent event) {
        rightButtonAction();
 
     }
     public void leftButtonAction(){    /**左に進む*/
-        outputAction("DOWN");
-        chara2.setCharaDir(MoveChara.TYPE_LEFT);
-        chara2.move( -1, 0);
-        mapPrint(chara2, mapData2);
-        goalAction(chara2,mapData2);
+        if(map2==true){
+            outputAction("DOWN");
+            chara2.setCharaDir(MoveChara.TYPE_LEFT);
+            chara2.move(-1, 0);
+            mapPrint(chara2, mapData2);
+            goalAction(chara2,mapData2);
+        }
     }
     public void leftButtonAction(ActionEvent event) {
         leftButtonAction();
     }
-
     public void upButtonAction(){    /**上に進む*/
-        outputAction("UP");
-        chara2.setCharaDir(MoveChara.TYPE_UP);
-        chara2.move( 0, -1);
-        mapPrint(chara2, mapData2);
-        goalAction(chara2,mapData2);
+        if(map2==true){
+            outputAction("UP");
+            chara2.setCharaDir(MoveChara.TYPE_UP);
+            chara2.move(0, -1);
+            mapPrint(chara2, mapData2);
+            goalAction(chara2,mapData2);
+        }
     }
     public void upButtonAction(ActionEvent event) {
         upButtonAction();
