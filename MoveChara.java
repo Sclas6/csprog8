@@ -1,8 +1,5 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.geometry.Pos;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
 import javafx.animation.AnimationTimer;
 
 public class MoveChara {
@@ -11,19 +8,19 @@ public class MoveChara {
     public static final int TYPE_RIGHT = 2;
     public static final int TYPE_UP    = 3;
 
-    private final String[] dirStrings  = { "d", "l", "r", "u" };
-    private final String[] kindStrings = { "1", "2", "3" };
-    private final String pngPathBefore = "png/neko";
-    private final String pngPathAfter  = ".png";
+    protected final String[] dirStrings  = { "d", "l", "r", "u" };
+    protected final String[] kindStrings = { "1", "2", "3" };
+    protected String pngPathBefore = "png/neko";
+    protected final String pngPathAfter  = ".png";
 
-    private int posX;
-    private int posY;
+    protected int posX;
+    protected int posY;
 
-    private MapData mapData;
+    protected MapData mapData;
 
-    private Image[][] charaImages;
-    private ImageView[] charaImageViews;
-    private ImageAnimation[] charaImageAnimations;
+    protected Image[][] charaImages;
+    protected ImageView[] charaImageViews;
+    protected ImageAnimation[] charaImageAnimations;
 
     private int count   = 0;
     private int diffx   = 1;
@@ -52,6 +49,9 @@ public class MoveChara {
         posY = startY;
 
         setCharaDir(TYPE_DOWN);
+    }
+    MoveChara(){
+        System.out.print("a");
     }
 
     public String getMessage(){
@@ -154,7 +154,7 @@ public class MoveChara {
         return charaImageViews[charaDir];
     }
 
-    private class ImageAnimation extends AnimationTimer {
+    public class ImageAnimation extends AnimationTimer {
         // アニメーション対象ノード
         private ImageView   charaView     = null;
         private Image[]     charaImages   = null;
