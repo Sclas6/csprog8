@@ -1,3 +1,4 @@
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.sql.Timestamp; // score data para //
@@ -201,6 +202,69 @@ public class MapGameController implements Initializable {
             map2 = false;
         }
     }
+    public void moveTom(){
+        timeline = new Timeline(
+            new KeyFrame(
+                new Duration(200),//1000ミリ秒
+                new EventHandler<ActionEvent>(){
+                    @Override
+                    public void handle(ActionEvent event){
+                        int dx,dy;
+                        dx = jerry.getPosX()-tom.getPosX();
+                        dy = jerry.getPosY()-tom.getPosY();
+                        if(dx==tmpx&&dy==tmpy){
+                            timeline.stop();
+                            move = false;
+                            //map2 = true;
+                            //mapPrint(jerry,mapData2);
+                        }else{
+                            System.out.println("( "+dx+","+dy+" )");
+                            mapPrint(tom,mapData);
+                        }
+                        if(Math.abs(dx)>Math.abs(dy)){
+                            if(dx>0 &&mapData.getMap(tom.getPosX() + 1,tom.getPosY())!=MapData.TYPE_WALL){
+                                tom.setCharaDir(MoveChara.TYPE_RIGHT);
+                                tom.move(1, 0);
+                            }
+                            else if(dx<0 &&mapData.getMap(tom.getPosX() - 1,tom.getPosY())!=MapData.TYPE_WALL){
+                                tom.setCharaDir(MoveChara.TYPE_LEFT);
+                                tom.move(-1, 0);
+                            }
+                            else if(dy>0){
+                                tom.setCharaDir(MoveChara.TYPE_DOWN);
+                                tom.move(0, 1);
+                            }
+                            else if(dy<0){
+                                tom.setCharaDir(MoveChara.TYPE_UP);
+                                tom.move(0,-1);
+                            }
+                        }
+                        else{
+                            if(dy>0&&mapData.getMap(tom.getPosX(),tom.getPosY()+1)!=MapData.TYPE_WALL){
+                                tom.setCharaDir(MoveChara.TYPE_DOWN);
+                                tom.move(0, 1);
+                            }
+                            else if(dy<0&&mapData.getMap(tom.getPosX(),tom.getPosY()-1)!=MapData.TYPE_WALL){
+                                tom.setCharaDir(MoveChara.TYPE_UP);
+                                tom.move(0,-1);
+                            }
+                            else if(dx>0){
+                                tom.setCharaDir(MoveChara.TYPE_RIGHT);
+                                tom.move(1, 0);
+                            }
+                            else if(dx<0){
+                                tom.setCharaDir(MoveChara.TYPE_LEFT);
+                                tom.move(-1, 0);
+                            }
+                        }
+                        goalAction(tom, mapData);
+                        tmpx = dx;
+                        tmpy = dy;
+                    }
+                }
+            )
+        );
+    }
     //DEBUG GOAL
     public Timeline timeline;
     public int tmpx,tmpy;
@@ -209,68 +273,19 @@ public class MapGameController implements Initializable {
         if(map2 == true){
             map2 = false;
             move = true;
-            mapPrint(tom, mapData);
-            timeline = new Timeline(
-                new KeyFrame(
-                    new Duration(200),//1000ミリ秒
-                    new EventHandler<ActionEvent>(){
-                        @Override
-                        public void handle(ActionEvent event){
-                            int dx,dy;
-                            dx = jerry.getPosX()-tom.getPosX();
-                            dy = jerry.getPosY()-tom.getPosY();
-                            if(dx==tmpx&&dy==tmpy){
-                                timeline.stop();
-                                move = false;
-                            }
-                            System.out.println("( "+dx+","+dy+" )");
-                                if(Math.abs(dx)>Math.abs(dy)){
-                                    if(dx>0 &&mapData.getMap(tom.getPosX() + 1,tom.getPosY())!=MapData.TYPE_WALL){
-                                        tom.setCharaDir(MoveChara.TYPE_RIGHT);
-                                        tom.move(1, 0);
-                                    }
-                                    else if(dx<0 &&mapData.getMap(tom.getPosX() - 1,tom.getPosY())!=MapData.TYPE_WALL){
-                                        tom.setCharaDir(MoveChara.TYPE_LEFT);
-                                        tom.move(-1, 0);
-                                    }
-                                    else if(dy>0){
-                                        tom.setCharaDir(MoveChara.TYPE_DOWN);
-                                        tom.move(0, 1);
-                                    }
-                                    else if(dy<0){
-                                        tom.setCharaDir(MoveChara.TYPE_UP);
-                                        tom.move(0,-1);
-                                    }
-                                }
-                                else{
-                                    if(dy>0&&mapData.getMap(tom.getPosX(),tom.getPosY()+1)!=MapData.TYPE_WALL){
-                                        tom.setCharaDir(MoveChara.TYPE_DOWN);
-                                        tom.move(0, 1);
-                                    }
-                                    else if(dy<0&&mapData.getMap(tom.getPosX(),tom.getPosY()-1)!=MapData.TYPE_WALL){
-                                        tom.setCharaDir(MoveChara.TYPE_UP);
-                                        tom.move(0,-1);
-                                    }
-                                    else if(dx>0){
-                                        tom.setCharaDir(MoveChara.TYPE_RIGHT);
-                                        tom.move(1, 0);
-                                    }
-                                    else if(dx<0){
-                                        tom.setCharaDir(MoveChara.TYPE_LEFT);
-                                        tom.move(-1, 0);
-                                    }
-                                }
-                                mapPrint(tom, mapData);
-                                goalAction(tom, mapData);
-                                tmpx = dx;
-                                tmpy = dy;
-                        }
-                    }
-                )
-            );
+            Image jerryhole = new Image(new File("png/JERRYHOLE.gif").toURI().toString());
+            ImageView jerryholeimage = new ImageView(jerryhole);
+            mapGrid.add(jerryholeimage, jerry.getPosX(), jerry.getPosY());
             //タイマーの開始
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            timeline.play();
+            TimerTask task = new TimerTask() {
+                public void run() {
+                  moveTom();
+                  timeline.setCycleCount(Timeline.INDEFINITE);
+                  timeline.play();
+                }
+              };
+            Timer timer = new Timer();
+            timer.schedule(task,2000);
         }
     }
     public void func4ButtonAction(ActionEvent event) {
