@@ -264,6 +264,8 @@ public class MapGameController implements Initializable {
                 }
             )
         );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
     public void gifimage(){
             mapPrint(tom, mapData);
@@ -279,21 +281,33 @@ public class MapGameController implements Initializable {
             Image jerryhole = new Image(new File("png/JERRYHOLE.gif").toURI().toString());
             ImageView jerryholeimage = new ImageView(jerryhole);
             mapGrid.add(jerryholeimage, jerry.getPosX(), jerry.getPosY());
-            TimerTask task = new TimerTask() {
-                public void run() {
-                  moveTom();
-                  timeline.setCycleCount(Timeline.INDEFINITE);
-                  timeline.play();
-                }
-            };
-            mapPrint(tom, mapData);
-            Image jerryhole2 = new Image(new File("png/JERRYHOLE2.gif").toURI().toString());
-            ImageView jerryholeimage2 = new ImageView(jerryhole2);
-            mapGrid.add(jerryholeimage2, jerry.getPosX(), jerry.getPosY());
-            Timer timer = new Timer();
-            timer.schedule(task, 2000);
-            timeline = new Timeline(
+            Timeline changemap = new Timeline(
+                new KeyFrame(
+                    new Duration(1000),
+                    new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent event){
+                            mapPrint(tom, mapData);
+                            Image jerryhole2 = new Image(new File("png/JERRYHOLE2.gif").toURI().toString());
+                            ImageView jerryholeimage2 = new ImageView(jerryhole2);
+                            mapGrid.add(jerryholeimage2, jerry.getPosX(), jerry.getPosY());
+                        }
+                    }
+                )
             );
+            Timeline movetom = new Timeline(
+                new KeyFrame(
+                    new Duration(2600),
+                    new EventHandler<ActionEvent>(){
+                        @Override
+                        public void handle(ActionEvent event){
+                            moveTom();
+                        }
+                    }
+                )
+            );
+            changemap.play();
+            movetom.play();
         }
     }
     public void func4ButtonAction(ActionEvent event) {
