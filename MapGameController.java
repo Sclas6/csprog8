@@ -219,7 +219,6 @@ public class MapGameController implements Initializable {
                             //mapPrint(jerry,mapData2);
                         }else{
                             System.out.println("( "+dx+","+dy+" )");
-                            mapPrint(tom,mapData);
                         }
                         if(Math.abs(dx)>Math.abs(dy)){
                             if(dx>0 &&mapData.getMap(tom.getPosX() + 1,tom.getPosY())!=MapData.TYPE_WALL){
@@ -258,12 +257,16 @@ public class MapGameController implements Initializable {
                             }
                         }
                         goalAction(tom, mapData);
+                        mapPrint(tom,mapData);
                         tmpx = dx;
                         tmpy = dy;
                     }
                 }
             )
         );
+    }
+    public void gifimage(){
+            mapPrint(tom, mapData);
     }
     //DEBUG GOAL
     public Timeline timeline;
@@ -276,16 +279,21 @@ public class MapGameController implements Initializable {
             Image jerryhole = new Image(new File("png/JERRYHOLE.gif").toURI().toString());
             ImageView jerryholeimage = new ImageView(jerryhole);
             mapGrid.add(jerryholeimage, jerry.getPosX(), jerry.getPosY());
-            //タイマーの開始
             TimerTask task = new TimerTask() {
                 public void run() {
                   moveTom();
                   timeline.setCycleCount(Timeline.INDEFINITE);
                   timeline.play();
                 }
-              };
+            };
+            mapPrint(tom, mapData);
+            Image jerryhole2 = new Image(new File("png/JERRYHOLE2.gif").toURI().toString());
+            ImageView jerryholeimage2 = new ImageView(jerryhole2);
+            mapGrid.add(jerryholeimage2, jerry.getPosX(), jerry.getPosY());
             Timer timer = new Timer();
-            timer.schedule(task,2000);
+            timer.schedule(task, 2000);
+            timeline = new Timeline(
+            );
         }
     }
     public void func4ButtonAction(ActionEvent event) {
