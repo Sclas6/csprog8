@@ -32,7 +32,6 @@
       </Label>
         <GridPane fx:id="itemGrid" prefWidth="96" prefHeight="32" />
         <Label fx:id = "time" prefHeight="40.0" prefWidth = "300.0" text ="Time"/>
-        <Label fx:id="timer" text="a"/>
     </HBox>
       <StackPane fx:id="mapStack" prefWidth="80" prefHeight="80">
         <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" />
