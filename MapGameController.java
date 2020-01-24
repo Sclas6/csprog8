@@ -126,7 +126,7 @@ public class MapGameController implements Initializable {
         mapStack.setAlignment(close,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(yourScore,Pos.TOP_CENTER);
         mapStack.setAlignment(rank,Pos.CENTER);
-        mapStack.setMargin(ranking, new Insets(1000,140,88,0));
+        mapStack.setMargin(ranking, new Insets(90,140,88,0));
         mapStack.setMargin(next, new Insets(90,65,88,0));
         mapStack.setMargin(close, new Insets(0,40,32,0));
         mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
