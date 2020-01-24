@@ -20,6 +20,7 @@ import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
+import javafx.animation.AnimationTimer;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
 
@@ -51,6 +52,10 @@ public class MapGameController implements Initializable {
     public Text rank = new Text("");
 //    public Group[] mapGroups;
     public static int score;
+    public static int item_count;
+    public Label time;
+    public int count;
+    public boolean is_timer_start = false;
     public Label item_message;
 
     @Override
@@ -94,6 +99,10 @@ public class MapGameController implements Initializable {
         if(isjerrymap==false && (tom.getPosX()*tom.getPosY()!=jerry.getPosX()*jerry.getPosY())){
             mapGrid.add(remnant,jerry.getPosX(),jerry.getPosY());
         }
+        if(is_timer_start == false){
+          Timer(240);
+          is_timer_start =true;
+        }
         int item_count = MoveTom.getItemCount();
         itemImageViews = new ImageView[5];
         for(int i=0;i<5;i++){
@@ -102,7 +111,6 @@ public class MapGameController implements Initializable {
         for(int i=0;i<MoveTom.getItemCount();i++){
             itemGrid.add(itemImageViews[i],i,0);
         }
-        System.out.println(item_count);
     }
 
     //run when chara reachs goal
@@ -115,6 +123,21 @@ public class MapGameController implements Initializable {
 
         }
     }
+
+    public void Timer(int c){
+      count = c;
+      Timeline timer = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>(){
+              @Override
+              public void handle(ActionEvent event) {
+                  count -= 1;
+                  time.setText(Integer.toString(count));
+              }
+          }));
+          timer.setCycleCount(480);
+          timer.play();
+          }
+
+
     // Score format //
     public static String getScoreData(){
       Timestamp ts = new Timestamp(System.currentTimeMillis());
@@ -126,7 +149,7 @@ public class MapGameController implements Initializable {
 
     // make score //
     public void makeScore(){
-      score = (int)(Math.random()*100000);
+      score = (int)(count*1000 + MoveTom.getItemCount()*4000);
     }
     // reuturn //
     public static int getScore(){
