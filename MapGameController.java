@@ -32,6 +32,7 @@ public class MapGameController implements Initializable {
     public GridPane itemGrid;
     public StackPane mapStack;
     public ImageView[] mapImageViews;
+    public ImageView[] itemImageViews;
     //For Goal Jadging
     public boolean isgoal = false;
     //map player seeing
@@ -50,7 +51,6 @@ public class MapGameController implements Initializable {
     public Text rank = new Text("");
 //    public Group[] mapGroups;
     public static int score;
-    public static int item_count;
     public Label item_message;
 
     @Override
@@ -71,8 +71,6 @@ public class MapGameController implements Initializable {
         initViews();
         isjerrymap = false;
         mapPrint(tom, maptom);
-        itemGrid.add(remnant,0,0);
-        itemGrid.add(mapImageViews[0],1,0);
     }
 
     public void mapPrint(MoveChara c, MapData m){
@@ -96,6 +94,15 @@ public class MapGameController implements Initializable {
         if(isjerrymap==false && (tom.getPosX()*tom.getPosY()!=jerry.getPosX()*jerry.getPosY())){
             mapGrid.add(remnant,jerry.getPosX(),jerry.getPosY());
         }
+        int item_count = MoveTom.getItemCount();
+        itemImageViews = new ImageView[5];
+        for(int i=0;i<5;i++){
+            itemImageViews[i] = new ImageView(new Image("png/ITEM.png"));
+        }
+        for(int i=0;i<MoveTom.getItemCount();i++){
+            itemGrid.add(itemImageViews[i],i,0);
+        }
+        System.out.println(item_count);
     }
 
     //run when chara reachs goal
@@ -269,9 +276,6 @@ public class MapGameController implements Initializable {
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-    }
-    public void gifimage(){
-            mapPrint(tom, maptom);
     }
     //DEBUG GOAL
     public Timeline timeline;
