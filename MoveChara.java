@@ -50,9 +50,6 @@ public class MoveChara {
 
         setCharaDir(TYPE_DOWN);
     }
-    MoveChara(){
-        System.out.print("a");
-    }
 
     public String getMessage(){
         return message;
