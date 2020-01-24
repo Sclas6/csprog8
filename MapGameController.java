@@ -1,5 +1,7 @@
 import java.net.URL;
-import java.util.*;
+import java.util.ResourceBundle;
+import java.lang.*;
+import java.awt.*;
 import java.sql.Timestamp; // score data para //
 import java.text.SimpleDateFormat; // score data format //
 import javafx.fxml.Initializable;
@@ -13,34 +15,27 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
-import javafx.animation.Timeline;
-import javafx.animation.KeyFrame;
-import javafx.util.Duration;
-import javafx.event.EventHandler;
 
 public class MapGameController implements Initializable {
     public MapData mapData;
-    public MoveTom tom;
-    public MapData mapData2;
-    public MoveJerry jerry;
+    public MoveChara chara;
     public GridPane mapGrid;
     public StackPane mapStack;
     public ImageView[] mapImageViews;
     //For Goal Jadging
     public boolean isgoal = false;
-    //map player seeing
-    public static boolean map2;
     //Making Goal Effects
     public Image goalImage = new Image("png/GOAL.png");
     public Image scoreWindow = new Image("png/ScoreWindow.png");
-    public Image rem = new Image("png/REMNANT.png");
     public ImageView goalImageView = new ImageView(goalImage);
     public ImageView scoreWindowView = new ImageView(scoreWindow);
-    public ImageView remnant = new ImageView(rem);
     public Button ranking = new Button("RANKING");
     public Button next = new Button("NEXT");
     public Button close = new Button("CLOSE");
@@ -53,11 +48,8 @@ public class MapGameController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        mapData = new MapData(21,15,-1);
-        tom = new MoveTom(1,1,mapData);
-        mapData2 = new MapData(21,15,0);
-        jerry = new MoveJerry(1, 1, mapData2);
-        mapData2.setItem(0);
+        mapData = new MapData(21,15);
+        chara = new MoveChara(1,1,mapData);
 //        mapGroups = new Group[mapData.getHeight()*mapData.getWidth()];
         mapImageViews = new ImageView[mapData.getHeight()*mapData.getWidth()];
         for(int y=0; y<mapData.getHeight(); y++){
@@ -67,19 +59,17 @@ public class MapGameController implements Initializable {
             }
         }
         initViews();
-        map2 = false;
-        mapPrint(tom, mapData);
+        mapPrint(chara, mapData);
     }
 
     public void mapPrint(MoveChara c, MapData m){
         int cx = c.getPosX();
         int cy = c.getPosY();
         mapGrid.getChildren().clear();
-        mapImageViews = new ImageView[m.getHeight()*m.getWidth()];
-        label1.setText(c.getMessage());
-        for(int y=0; y<m.getHeight(); y++){
-            for(int x=0; x<m.getWidth(); x++){
-                int index = y*m.getWidth() + x;
+        label1.setText(MoveChara.message);
+        for(int y=0; y<mapData.getHeight(); y++){
+            for(int x=0; x<mapData.getWidth(); x++){
+                int index = y*mapData.getWidth() + x;
                 //added
                 mapImageViews[index] = m.getImageView(x,y);
                 if (x==cx && y==cy) {
@@ -88,9 +78,6 @@ public class MapGameController implements Initializable {
                     mapGrid.add(mapImageViews[index], x, y);
                 }
             }
-        }
-        if(map2==false && (tom.getPosX()*tom.getPosY()!=jerry.getPosX()*jerry.getPosY())){
-            mapGrid.add(remnant,jerry.getPosX(),jerry.getPosY());
         }
     }
 
@@ -139,12 +126,12 @@ public class MapGameController implements Initializable {
         mapStack.setAlignment(close,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(yourScore,Pos.TOP_CENTER);
         mapStack.setAlignment(rank,Pos.CENTER);
-        mapStack.setMargin(ranking, new Insets(90,140,88,0));
+        mapStack.setMargin(ranking, new Insets(1000,140,88,0));
         mapStack.setMargin(next, new Insets(90,65,88,0));
         mapStack.setMargin(close, new Insets(0,40,32,0));
         mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
-        mapStack.setMargin(yourScore, new Insets(50,0,0,0));
-        mapStack.setMargin(rank, new Insets(70,0,0,0));
+        mapStack.setMargin(yourScore, new Insets(10,0,0,0));
+        mapStack.setMargin(rank, new Insets(38,0,0,0));
         ranking.setPrefWidth(80);
         ranking.setPrefHeight(8);
         ranking.setOnAction((ActionEvent)-> {
@@ -161,123 +148,53 @@ public class MapGameController implements Initializable {
         next.setPrefHeight(4);
         next.setOnAction((ActionEvent)->{
             outputAction("NEXT MAP");
+            mapData = new MapData(21,15);
+            chara = new MoveChara(1, 1, mapData);
             isgoal = false;
-            resetMap();
+            initMap();
             mapStack.getChildren().removeAll(goalImageView,ranking,next);
-            mapPrint(tom, mapData);
+            mapPrint(chara, mapData);
         });
         rank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
         rank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #00CC00;");
         rank.setFill(Color.WHITE);
-        yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",60));
+        yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",40));
         yourScore.setTextFill(Color.WHITE);
         label1.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
     }
-    public void resetMap(){
-        outputAction("RESET");
+    public void initMap(){
         initViews();
-        mapData = new MapData(21,15,-1);
-        tom = new MoveTom(1, 1, mapData);
-        mapData2 = new MapData(21,15,0);
-        jerry = new MoveJerry(1, 1, mapData2);
-        isgoal = false;
-        MoveChara.setItem(0);
+        MoveChara.item_count=0;
         MoveChara.message = "アイテム数: 0";
-        mapStack.getChildren().removeAll(goalImageView,ranking,next);
     }
     //DEBUG THROUGH WALL
     public void func1ButtonAction(ActionEvent event) {
-        System.out.println(mapData2.getItem());
         mapData.fillMap(MapData.TYPE_NONE);
         mapData.setGoal(19,13);
-        mapStack.getChildren().removeAll(goalImageView,ranking,next);
-        mapPrint(tom, mapData);
     }
     //DEBUG RESET
     public void func2ButtonAction(ActionEvent event) {
-        if(move == false){
-            resetMap();
-            mapPrint(tom, mapData);
-            map2 = false;
-        }
+        outputAction("RESET");
+        mapData = new MapData(21,15);
+        chara = new MoveChara(1, 1, mapData);
+        isgoal = false;
+        //MoveChara.message = "a";
+        //MoveChara.item_count = 0;
+        initMap();
+        mapStack.getChildren().removeAll(goalImageView,ranking,next);
+        mapPrint(chara, mapData);
+        //map2 = false;
     }
     //DEBUG GOAL
-    public Timeline timeline;
-    public int tmpx,tmpy;
-    public boolean move = false;
     public void func3ButtonAction(ActionEvent event) {
-        if(map2 == true){
-            map2 = false;
-            move = true;
-            mapPrint(tom, mapData);
-            timeline = new Timeline(
-                new KeyFrame(
-                    new Duration(200),//1000ミリ秒
-                    new EventHandler<ActionEvent>(){
-                        @Override
-                        public void handle(ActionEvent event){
-                            int dx,dy;
-                            dx = jerry.getPosX()-tom.getPosX();
-                            dy = jerry.getPosY()-tom.getPosY();
-                            if(dx==tmpx&&dy==tmpy){
-                                timeline.stop();
-                                move = false;
-                            }
-                            System.out.println("( "+dx+","+dy+" )");
-                                if(Math.abs(dx)>Math.abs(dy)){
-                                    if(dx>0 &&mapData.getMap(tom.getPosX() + 1,tom.getPosY())!=MapData.TYPE_WALL){
-                                        tom.setCharaDir(MoveChara.TYPE_RIGHT);
-                                        tom.move(1, 0);
-                                    }
-                                    else if(dx<0 &&mapData.getMap(tom.getPosX() - 1,tom.getPosY())!=MapData.TYPE_WALL){
-                                        tom.setCharaDir(MoveChara.TYPE_LEFT);
-                                        tom.move(-1, 0);
-                                    }
-                                    else if(dy>0){
-                                        tom.setCharaDir(MoveChara.TYPE_DOWN);
-                                        tom.move(0, 1);
-                                    }
-                                    else if(dy<0){
-                                        tom.setCharaDir(MoveChara.TYPE_UP);
-                                        tom.move(0,-1);
-                                    }
-                                }
-                                else{
-                                    if(dy>0&&mapData.getMap(tom.getPosX(),tom.getPosY()+1)!=MapData.TYPE_WALL){
-                                        tom.setCharaDir(MoveChara.TYPE_DOWN);
-                                        tom.move(0, 1);
-                                    }
-                                    else if(dy<0&&mapData.getMap(tom.getPosX(),tom.getPosY()-1)!=MapData.TYPE_WALL){
-                                        tom.setCharaDir(MoveChara.TYPE_UP);
-                                        tom.move(0,-1);
-                                    }
-                                    else if(dx>0){
-                                        tom.setCharaDir(MoveChara.TYPE_RIGHT);
-                                        tom.move(1, 0);
-                                    }
-                                    else if(dx<0){
-                                        tom.setCharaDir(MoveChara.TYPE_LEFT);
-                                        tom.move(-1, 0);
-                                    }
-                                }
-                                mapPrint(tom, mapData);
-                                goalAction(tom, mapData);
-                                tmpx = dx;
-                                tmpy = dy;
-                        }
-                    }
-                )
-            );
-            //タイマーの開始
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            timeline.play();
+        if(isgoal != true){
+            initViews();
+            mapStack.getChildren().addAll(goalImageView,ranking,next);
+            isgoal = true;
         }
     }
     public void func4ButtonAction(ActionEvent event) {
-        if(move == false){
-            map2 = true;
-            mapPrint(jerry, mapData2);
-        }
+        outputAction(MapGame.getName());
     }
 
     public void keyAction(KeyEvent event){
@@ -296,51 +213,46 @@ public class MapGameController implements Initializable {
     public void outputAction(String actionString) {
         System.out.println("Select Action: " + actionString);
     }
+
     public void downButtonAction(){
-        if(map2 == true){
-            outputAction("DOWN");
-            jerry.setCharaDir(MoveChara.TYPE_DOWN);
-            jerry.move(0, 1);
-            mapPrint(jerry, mapData2);
-            goalAction(jerry, mapData2);
-        }
+        outputAction("DOWN");
+        chara.setCharaDir(MoveChara.TYPE_DOWN);
+        chara.move(0, 1);
+        mapPrint(chara, mapData);
+        goalAction(chara, mapData);
     }
     public void downButtonAction(ActionEvent event) {
         downButtonAction();
     }
+
     public void rightButtonAction(){
-        if(map2==true){
-            outputAction("RIGHT");
-            jerry.setCharaDir(MoveChara.TYPE_RIGHT);
-            jerry.move(1, 0);
-            mapPrint(jerry, mapData2);
-            goalAction(jerry,mapData2);
-        }
+        outputAction("RIGHT");
+        chara.setCharaDir(MoveChara.TYPE_RIGHT);
+        chara.move( 1, 0);
+        mapPrint(chara, mapData);
+        goalAction(chara,mapData);
     }
     public void rightButtonAction(ActionEvent event) {
        rightButtonAction();
 
     }
     public void leftButtonAction(){    /**左に進む*/
-        if(map2==true){
-            outputAction("DOWN");
-            jerry.setCharaDir(MoveChara.TYPE_LEFT);
-            jerry.move(-1, 0);
-            mapPrint(jerry, mapData2);
-            goalAction(jerry,mapData2);
-        }
+        outputAction("DOWN");
+        chara.setCharaDir(MoveChara.TYPE_LEFT);
+        chara.move( -1, 0);
+        mapPrint(chara, mapData);
+        goalAction(chara,mapData);
     }
     public void leftButtonAction(ActionEvent event) {
         leftButtonAction();
     }
+
     public void upButtonAction(){    /**上に進む*/
-        if(map2==true){
-            outputAction("UP");
-            jerry.setCharaDir(MoveChara.TYPE_UP);
-            jerry.move(0, -1);
-            mapPrint(jerry, mapData2);
-            goalAction(jerry,mapData2);
-        }
+        outputAction("UP");
+        chara.setCharaDir(MoveChara.TYPE_UP);
+        chara.move( 0, -1);
+        mapPrint(chara, mapData);
+        goalAction(chara,mapData);
     }
     public void upButtonAction(ActionEvent event) {
         upButtonAction();

@@ -20,9 +20,9 @@ public class MapData {
     private int[][] maps;
     private int width;
     private int height;
-    private int item_count;
+    public static int item_count;
 
-    MapData(int x, int y, int item){
+    MapData(int x, int y){
         mapImages     = new Image[mapImageFiles.length];
         mapImageViews = new ImageView[y][x];
         for (int i=0; i<mapImageFiles.length; i++) {
@@ -32,15 +32,13 @@ public class MapData {
         width  = x;
         height = y;
         maps = new int[y][x];
-        int i=((int)(Math.random()*100)%3==0)?((int)(Math.random()*100)%3==0)?3:4:5;
-        i = (item == -1)? i:item;
+        int i=0;
+        i = ((int)(Math.random()*100)%3==0)?((int)(Math.random()*100)%3==0)?3:4:5;
 
         fillMap(MapData.TYPE_WALL);
         digMap(1, 3);
+        setGoal(19,13);
         setItem(i);
-        if(item_count!=0){
-            setGoal(19,13);
-        }
         setImageViews();
     }
 
@@ -119,7 +117,7 @@ public class MapData {
         while(item_count<i){
             for(int y = 0;y<getHeight();y++){
                 for(int x = 0;x<getWidth();x++){
-                    if(getMap(x,y)==MapData.TYPE_NONE&&(int)(Math.random()*100)%40==0&&item_count<i&&(x!=1&&y!=1)&&(x!=19&&y!=13)){
+                    if(getMap(x,y)==MapData.TYPE_NONE&&(int)(Math.random()*100)%40==0&&item_count<i&&(x!=1&&y!=1)){
                         item_count++;
                         setMap(x,y,MapData.TYPE_ITEM);
                     }
@@ -127,9 +125,6 @@ public class MapData {
                 }
             }
         }
-    }
-    public int getItem(){
-        return item_count;
     }
 
     public void printMap(){

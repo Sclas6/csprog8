@@ -13,24 +13,25 @@
   </padding>
 
   <children>
-    <HBox prefHeight="50" stylesheets="MapGame.css" >
+    <HBox prefHeight="50">
       <children>
 	<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-	  <Button fx:id = "up" text="↑" GridPane.rowIndex="0" GridPane.columnIndex="1" onAction="#upButtonAction" />
+	  <Button text="↑" GridPane.rowIndex="0" GridPane.columnIndex="1" onAction="#upButtonAction" />
 	  <Button text="←" GridPane.rowIndex="1" GridPane.columnIndex="0" onAction="#leftButtonAction"/>
 	  <Button text="→" GridPane.rowIndex="1" GridPane.columnIndex="2" onAction="#rightButtonAction" />
 	  <Button text="↓" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#downButtonAction" />
 	</GridPane>
-	<Button text="func1" prefWidth="100" onAction="#func1ButtonAction" />
+	<Button text="func1" prefWidth="100" onAction="#func1ButtonAction"/>
 	<Button text="func2" prefWidth="100" onAction="#func2ButtonAction"/>
-	<Button text="Tom" prefWidth="100" onAction="#func3ButtonAction"/>
-	<Button text="Jerry" prefWidth="100" onAction="#func4ButtonAction"/>
-      </children>
+	<Button text="func3" prefWidth="100" onAction="#func3ButtonAction"/>
+	<Button text="func4" prefWidth="100" onAction="#func4ButtonAction"/>
+  </children>
     </HBox>
-    <HBox>
-      <Label fx:id="label1" prefHeight="40.0" prefWidth="300.0" text="ITEM"/>
-      <Label fx:id="label2" prefHeight="40.0" prefWidth="300.0" text="ITEM"/>
-    </HBox>
+    <Label
+					fx:id="label1"
+					prefHeight="40.0"
+					prefWidth="300.0"
+					text="ITEM" />
       <StackPane fx:id="mapStack" prefWidth="80" prefHeight="80">
         <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" >
         </GridPane>

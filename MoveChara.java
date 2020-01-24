@@ -1,5 +1,8 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.geometry.Pos;
+import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 import javafx.animation.AnimationTimer;
 
 public class MoveChara {
@@ -8,19 +11,19 @@ public class MoveChara {
     public static final int TYPE_RIGHT = 2;
     public static final int TYPE_UP    = 3;
 
-    protected final String[] dirStrings  = { "d", "l", "r", "u" };
-    protected final String[] kindStrings = { "1", "2", "3" };
-    protected String pngPathBefore = "png/neko";
-    protected final String pngPathAfter  = ".png";
+    private final String[] dirStrings  = { "d", "l", "r", "u" };
+    private final String[] kindStrings = { "1", "2", "3" };
+    private final String pngPathBefore = "png/neko";
+    private final String pngPathAfter  = ".png";
 
-    protected int posX;
-    protected int posY;
+    private int posX;
+    private int posY;
 
-    protected MapData mapData;
+    private MapData mapData;
 
-    protected Image[][] charaImages;
-    protected ImageView[] charaImageViews;
-    protected ImageAnimation[] charaImageAnimations;
+    private Image[][] charaImages;
+    private ImageView[] charaImageViews;
+    private ImageAnimation[] charaImageAnimations;
 
     private int count   = 0;
     private int diffx   = 1;
@@ -49,13 +52,6 @@ public class MoveChara {
         posY = startY;
 
         setCharaDir(TYPE_DOWN);
-    }
-    MoveChara(){
-        System.out.print("a");
-    }
-
-    public String getMessage(){
-        return message;
     }
 
     public void changeCount(){
@@ -88,15 +84,12 @@ public class MoveChara {
         }
     }
 
-    public static int getItemCount(){
+    public int getItemCount(){
         return item_count;
-    }
-    public static void setItem(int i){
-        item_count = i;
     }
     //With Items, chara can enter goal flag
     public boolean canGoal(){
-        if (getItemCount() == mapData.getItem()){
+        if (this.getItemCount() == MapData.item_count){
             return true;
         }
         else{
@@ -122,8 +115,7 @@ public class MoveChara {
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_NONE){
             return true;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL){
-            //return (canGoal()==true)?true:false;
-            return true;
+            return (canGoal()==true)?true:false;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_ITEM){
         return true;
         }
@@ -139,6 +131,7 @@ public class MoveChara {
                 mapData.setMap(posX,posY,MapData.TYPE_NONE);
                 mapData.setImageViews();
                 message = "アイテム数: "+Integer.toString(MoveChara.item_count);
+                System.out.println(item_count);
             }
             return true;
         }else if(mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL&&canGoal()==false){
@@ -154,7 +147,7 @@ public class MoveChara {
         return charaImageViews[charaDir];
     }
 
-    public class ImageAnimation extends AnimationTimer {
+    private class ImageAnimation extends AnimationTimer {
         // アニメーション対象ノード
         private ImageView   charaView     = null;
         private Image[]     charaImages   = null;
