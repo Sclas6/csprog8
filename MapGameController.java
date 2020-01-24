@@ -1,6 +1,8 @@
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ResourceBundle;
+import java.lang.*;
+import java.awt.*;
 import java.sql.Timestamp; // score data para //
 import java.text.SimpleDateFormat; // score data format //
 import javafx.fxml.Initializable;
@@ -14,8 +16,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.animation.Timeline;
@@ -41,10 +46,8 @@ public class MapGameController implements Initializable {
     //Making Goal Effects
     public Image goalImage = new Image("png/GOAL.png");
     public Image scoreWindow = new Image("png/ScoreWindow.png");
-    public Image rem = new Image("png/REMNANT.png");
     public ImageView goalImageView = new ImageView(goalImage);
     public ImageView scoreWindowView = new ImageView(scoreWindow);
-    public ImageView remnant = new ImageView(rem);
     public Button ranking = new Button("RANKING");
     public Button next = new Button("NEXT");
     public Button close = new Button("CLOSE");
@@ -177,8 +180,8 @@ public class MapGameController implements Initializable {
         mapStack.setMargin(next, new Insets(90,65,88,0));
         mapStack.setMargin(close, new Insets(0,40,32,0));
         mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
-        mapStack.setMargin(yourScore, new Insets(50,0,0,0));
-        mapStack.setMargin(rank, new Insets(70,0,0,0));
+        mapStack.setMargin(yourScore, new Insets(10,0,0,0));
+        mapStack.setMargin(rank, new Insets(38,0,0,0));
         ranking.setPrefWidth(80);
         ranking.setPrefHeight(8);
         ranking.setOnAction((ActionEvent)-> {
@@ -195,8 +198,10 @@ public class MapGameController implements Initializable {
         next.setPrefHeight(4);
         next.setOnAction((ActionEvent)->{
             outputAction("NEXT MAP");
+            mapData = new MapData(21,15);
+            chara = new MoveChara(1, 1, mapData);
             isgoal = false;
-            resetMap();
+            initMap();
             mapStack.getChildren().removeAll(goalImageView,ranking,next);
             mapPrint(tom, maptom);
         });
@@ -207,8 +212,7 @@ public class MapGameController implements Initializable {
         yourScore.setTextFill(Color.WHITE);
         item_message.setFont(Font.loadFont("file:font/rPOP.otf",28));
     }
-    public void resetMap(){
-        outputAction("RESET");
+    public void initMap(){
         initViews();
         maptom = new MapData(21,15,-1);
         tom = new MoveTom(1, 1, maptom);
@@ -217,7 +221,6 @@ public class MapGameController implements Initializable {
         isgoal = false;
         MoveChara.setItem(0);
         MoveChara.message = "アイテム数: 0";
-        mapStack.getChildren().removeAll(goalImageView,ranking,next);
     }
     //DEBUG THROUGH WALL
     public void func1ButtonAction(ActionEvent event) {
@@ -302,9 +305,6 @@ public class MapGameController implements Initializable {
         timeline.play();
     }
     //DEBUG GOAL
-    public Timeline timeline;
-    public int tmpx,tmpy;
-    public boolean move = false;
     public void func3ButtonAction(ActionEvent event) {
         if(isjerrymap == true){
             isjerrymap = false;
@@ -364,6 +364,7 @@ public class MapGameController implements Initializable {
     public void outputAction(String actionString) {
         System.out.println("Select Action: " + actionString);
     }
+
     public void downButtonAction(){
         if(isjerrymap == true){
             outputAction("DOWN");
@@ -376,6 +377,7 @@ public class MapGameController implements Initializable {
     public void downButtonAction(ActionEvent event) {
         downButtonAction();
     }
+
     public void rightButtonAction(){
         if(isjerrymap==true){
             outputAction("RIGHT");
@@ -402,6 +404,7 @@ public class MapGameController implements Initializable {
     public void leftButtonAction(ActionEvent event) {
         leftButtonAction();
     }
+
     public void upButtonAction(){    /**上に進む*/
         if(isjerrymap==true){
             outputAction("UP");
