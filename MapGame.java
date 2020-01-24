@@ -29,7 +29,6 @@ public class MapGame extends Application {
         stage.setScene(startScene);
         stage.show();
     }
-
     public static void main(String[] args) {
         //player_name = (args.length!=1)?"guest":args[0];
         launch(args);

@@ -143,11 +143,11 @@ public class MapGameController implements Initializable {
 
     // Score format //
     public static String getScoreData(){
-      Timestamp ts = new Timestamp(System.currentTimeMillis());
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
-      String str = sdf.format(ts);
-      String scoreData = MapGame.getName() + "," + getScore() + "," + str;
-      return scoreData;
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
+        String str = sdf.format(ts);
+        String scoreData = MapGame.getName() + "," + getScore() + "," + str;
+        return scoreData;
     }
 
     // make score //
@@ -160,11 +160,11 @@ public class MapGameController implements Initializable {
     }
 
     public void viewRanking(){
-       mapStack.getChildren().removeAll(scoreWindowView, rank, yourScore);
-       String ranking = CsvManager.getRanking();
-       yourScore.setText("Your Score: " + Integer.toString(score));
-       rank.setText(ranking);
-       mapStack.getChildren().addAll(scoreWindowView, rank, yourScore, close);
+        mapStack.getChildren().removeAll(scoreWindowView, rank, yourScore);
+        String ranking = CsvManager.getRanking();
+        yourScore.setText("Your Score: " + Integer.toString(score));
+        rank.setText(ranking);
+        mapStack.getChildren().addAll(scoreWindowView, rank, yourScore, close);
     }
 
     //initializing goal effects
@@ -205,12 +205,12 @@ public class MapGameController implements Initializable {
             mapStack.getChildren().removeAll(goalImageView,ranking,next);
             mapPrint(tom, maptom);
         });
-        rank.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
+        rank.setFont(Font.loadFont("file:font/rPOP.otf",28));
         rank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #00CC00;");
         rank.setFill(Color.WHITE);
-        yourScore.setFont(Font.loadFont("file:font/ラノベPOP.otf",40));
+        yourScore.setFont(Font.loadFont("file:font/rPOP.otf",60));
         yourScore.setTextFill(Color.WHITE);
-        item_message.setFont(Font.loadFont("file:font/ラノベPOP.otf",28));
+        item_message.setFont(Font.loadFont("file:font/rPOP.otf",28));
     }
     public void initMap(){
         initViews();
@@ -262,6 +262,7 @@ public class MapGameController implements Initializable {
                                 tom.move(1, 0);
                             }
                             else if(dx<0 &&maptom.getMap(tom.getPosX() - 1,tom.getPosY())!=MapData.TYPE_WALL){
+
                                 tom.setCharaDir(MoveChara.TYPE_LEFT);
                                 tom.move(-1, 0);
                             }
@@ -384,10 +385,11 @@ public class MapGameController implements Initializable {
             jerry.move(1, 0);
             mapPrint(jerry, mapjerry);
             goalAction(jerry,mapjerry);
+
         }
     }
     public void rightButtonAction(ActionEvent event) {
-       rightButtonAction();
+        rightButtonAction();
 
     }
     public void leftButtonAction(){    /**左に進む*/

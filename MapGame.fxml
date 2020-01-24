@@ -5,8 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.input.* ?>
-
-<VBox fx:controller="MapGameController" xmlns:fx="http://javafx.com/fxml"
+<VBox fx:controller="MapGameController" xmlns:fx="http://javafx.com/fxml" stylesheets="MapGame.css" 
       onKeyPressed="#keyAction">
   <padding>
     <Insets top="10" right="10" bottom="10" left="10"/>
@@ -16,10 +15,10 @@
     <HBox prefHeight="50">
       <children>
 	<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-	  <Button text="↑" GridPane.rowIndex="0" GridPane.columnIndex="1" onAction="#upButtonAction" />
-	  <Button text="←" GridPane.rowIndex="1" GridPane.columnIndex="0" onAction="#leftButtonAction"/>
-	  <Button text="→" GridPane.rowIndex="1" GridPane.columnIndex="2" onAction="#rightButtonAction" />
-	  <Button text="↓" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#downButtonAction" />
+      <Button fx:id = "up" text="↑" GridPane.rowIndex="0" GridPane.columnIndex="1" onAction="#upButtonAction" />
+      <Button text="←" GridPane.rowIndex="1" GridPane.columnIndex="0" onAction="#leftButtonAction"/>
+      <Button text="→" GridPane.rowIndex="1" GridPane.columnIndex="2" onAction="#rightButtonAction" />
+      <Button text="↓" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#downButtonAction" />
 	</GridPane>
 	<Button text="func1" prefWidth="100" onAction="#func1ButtonAction"/>
 	<Button text="func2" prefWidth="100" onAction="#func2ButtonAction"/>
