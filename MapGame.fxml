@@ -29,7 +29,7 @@
     </HBox>
     <HBox>
       <Label fx:id="label1" prefHeight="40.0" prefWidth="300.0" text="ITEM"/>
-      <Label fx:id="label2" prefHeight="40.0" prefWidth="300.0" text="ITEM"/>
+      <Label fx:id = "time" prefHeight="40.0" prefWidth = "300.0" text ="Time"/>
     </HBox>
       <StackPane fx:id="mapStack" prefWidth="80" prefHeight="80">
         <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" >
