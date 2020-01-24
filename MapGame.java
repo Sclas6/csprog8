@@ -31,7 +31,7 @@ public class MapGame extends Application {
     }
 
     public static void main(String[] args) {
-        player_name = (args.length!=1)?"guest":args[0];
+        //player_name = (args.length!=1)?"guest":args[0];
         launch(args);
     }
     public static String getName(){
@@ -66,7 +66,12 @@ public class MapGame extends Application {
         stackPane.setMargin(field,new Insets(0,40,32,0));
         stackPane.setMargin(startBtn,new Insets(38,0,0,0));
         stackPane.getChildren().addAll(label,field,startBtn,ruleBtn);
-        startBtn.setOnMouseClicked(event -> gameStart());
+        startBtn.setOnMouseClicked(event -> {
+            player_name = (field.getText().equals(""))?"guest":field.getText();
+            System.out.println("["+player_name+"]");
+            gameStart();
+        }
+            );
         ruleBtn.setOnMouseClicked(event -> gameStart());
 
         return new Scene(stackPane);
