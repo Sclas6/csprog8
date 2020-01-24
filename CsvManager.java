@@ -18,7 +18,6 @@ public class CsvManager{
            InputStreamReader is = new  InputStreamReader(fi);
            BufferedReader br = new BufferedReader(is);
 
-
            //MapGameController mgc = new MapGameController();//
 
            //set contents  //
@@ -43,6 +42,7 @@ public class CsvManager{
               map.put(Integer.parseInt(temp[1]),line);
               i++;
           }
+          br.close();
           map.forEach((key, value) -> pw.println(value));
           pw.close();
           for(int j = 0; j < i; j++){
@@ -60,7 +60,7 @@ public class CsvManager{
          BufferedReader br = new BufferedReader(is);
          int i = 0;
          String line;
-         while((line = br.readLine()) != null && i<10){
+         while((line = br.readLine()) != null && i<5){
              str += line;
              str += "\n";
              i++;
