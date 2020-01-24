@@ -11,6 +11,8 @@ public class MoveTom extends MoveChara{
     private ImageAnimation[] charaImageAnimations;
 
     MoveTom(int startX, int startY, MapData mapData){
+
+
         super(startX, startY, mapData);
         super.mapData = mapData;
         super.pngPathBefore = this.pngPathBefore;
