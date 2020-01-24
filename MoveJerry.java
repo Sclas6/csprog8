@@ -23,5 +23,6 @@ public class MoveJerry extends MoveChara{
             charaImageViews[i] = new ImageView(charaImages[i][0]);
             charaImageAnimations[i] = new ImageAnimation( charaImageViews[i], charaImages[i] );
         }
+        setCharaDir(TYPE_DOWN);
     }
 }
