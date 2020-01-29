@@ -27,11 +27,14 @@
       </children>
     </HBox>
     <HBox>
-      <Label fx:id="item_message" prefHeight="40.0" prefWidth="200.0" text="ITEM">
+      <Label fx:id="item_message" prefHeight="40.0" prefWidth="160.0" text="アイテム数:">
         <padding><Insets top="0" right="0" bottom="12" left="0"/></padding>
       </Label>
-        <GridPane fx:id="itemGrid" prefWidth="96" prefHeight="32" />
-        <Label fx:id = "time" prefHeight="40.0" prefWidth = "300.0" text ="Time"/>
+      <GridPane fx:id="itemGrid" prefWidth="180" prefHeight="32"/>
+      <Label fx:id = "time" prefHeight="40.0" prefWidth = "300.0" text ="LOADING...">
+        <padding><Insets top="0" right="0" bottom="12" left="0"/></padding>
+      </Label>
+
     </HBox>
       <StackPane fx:id="mapStack" prefWidth="80" prefHeight="80">
         <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" />

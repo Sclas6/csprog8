@@ -19,8 +19,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.animation.Timeline;
+import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
-import javafx.animation.AnimationTimer;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
 
@@ -50,22 +50,20 @@ public class MapGameController implements Initializable {
     public Button close = new Button("CLOSE");
     public Label yourScore = new Label("");
     public Text rank = new Text("");
-//    public Group[] mapGroups;
     public static int score;
-    public static int item_count;
     public Label time;
-    public int count;
-    public boolean is_timer_start = false;
+    public static Timeline timer;
     public Label item_message;
+    public int count;
+    public static boolean is_timer_start = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        maptom = new MapData(21,15,-1);
+        maptom = new MapData(21,15,99);
         tom = new MoveTom(1,1,maptom);
-        mapjerry = new MapData(21,15,0);
+        mapjerry = new MapData(21,15,-99);
         jerry = new MoveJerry(1, 1, mapjerry);
-        mapjerry.setItem(0);
-//        mapGroups = new Group[mapData.getHeight()*mapData.getWidth()];
+        mapjerry.setItem(0,MapData.Type.jerry);
         mapImageViews = new ImageView[maptom.getHeight()*maptom.getWidth()];
         for(int y=0; y<maptom.getHeight(); y++){
             for(int x=0; x<maptom.getWidth(); x++){
@@ -74,7 +72,9 @@ public class MapGameController implements Initializable {
             }
         }
         initViews();
-        isjerrymap = false;
+        isjerrymap = true;
+        Timer(240);
+        timer.stop();
         mapPrint(tom, maptom);
     }
 
@@ -83,7 +83,6 @@ public class MapGameController implements Initializable {
         int cy = c.getPosY();
         mapGrid.getChildren().clear();
         mapImageViews = new ImageView[m.getHeight()*m.getWidth()];
-        item_message.setText(c.getMessage());
         for(int y=0; y<m.getHeight(); y++){
             for(int x=0; x<m.getWidth(); x++){
                 int index = y*m.getWidth() + x;
@@ -100,16 +99,22 @@ public class MapGameController implements Initializable {
             mapGrid.add(remnant,jerry.getPosX(),jerry.getPosY());
         }
         if(is_timer_start == false){
-          Timer(240);
-          is_timer_start =true;
+            //240
+            Timer(240);
+            is_timer_start =true;
         }
-        int item_count = MoveTom.getItemCount();
-        itemImageViews = new ImageView[5];
-        for(int i=0;i<5;i++){
-            itemImageViews[i] = new ImageView(new Image("png/ITEM.png"));
-        }
-        for(int i=0;i<MoveTom.getItemCount();i++){
-            itemGrid.add(itemImageViews[i],i,0);
+        itemImageViews = new ImageView[99];
+        itemGrid.getChildren().clear();
+        if(isjerrymap==true){
+            for(int i=0;i<jerry.getItemCount();i++){
+                itemImageViews[i] = new ImageView(new Image("png/ITEM2.png"));
+                itemGrid.add(itemImageViews[i],i,0);
+            }
+        }else{
+            for(int i=0;i<tom.getItemCount();i++){
+                itemImageViews[i] = new ImageView(new Image("png/ITEM.png"));
+                itemGrid.add(itemImageViews[i],i,0);
+            }
         }
     }
 
@@ -120,25 +125,34 @@ public class MapGameController implements Initializable {
             makeScore();
             mapStack.getChildren().addAll(goalImageView,ranking,next);
             CsvManager.exportCsv();
-
+            while(timer.getStatus()==Status.RUNNING){
+                timer.stop();
+            }
+            is_timer_start = false;
         }
     }
-
+    /**SETTING TIMER */
     public void Timer(int c){
-      count = c;
-      Timeline timer = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>(){
-              @Override
-              public void handle(ActionEvent event) {
-                  count -= 1;
-                  time.setText(Integer.toString(count));
-              }
-          }));
-          timer.setCycleCount(480);
-          timer.play();
-          }
+        count = c;
+        count += 1;
+        timer = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                count -= 1;
+                time.setText("残り時間: "+Integer.toString(count));
+                if(count<0){
+                    resetMap();
+                    timer.stop();
+                    is_timer_start = false;
+                    time.setText("LOADING...");
+                    MapGame.gameOver();
+                }
+            }
+        }));
+        timer.setCycleCount(c*2);
+    }
 
-
-    // Score format //
+    /**MAKING SCORE FORMAT */
     public static String getScoreData(){
         Timestamp ts = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
@@ -147,15 +161,17 @@ public class MapGameController implements Initializable {
         return scoreData;
     }
 
-    // make score //
+    //**MAKING SCORE */
     public void makeScore(){
-      score = (int)(count*1000 + MoveTom.getItemCount()*4000);
+      score = (int)(count*1000 + tom.getItemCount()*4000);
     }
-    // reuturn //
+
+    //**GET SCORE */
     public static int getScore(){
         return score;
     }
 
+    //**VIEW RANKING */
     public void viewRanking(){
         mapStack.getChildren().removeAll(scoreWindowView, rank, yourScore);
         String ranking = CsvManager.getRanking();
@@ -164,7 +180,7 @@ public class MapGameController implements Initializable {
         mapStack.getChildren().addAll(scoreWindowView, rank, yourScore, close);
     }
 
-    //initializing goal effects
+    //**INITIALIZE VIEWING OBJECT */
     @SuppressWarnings("static-access")
     public void initViews(){
         mapStack.setAlignment(goalImageView, Pos.CENTER);
@@ -173,8 +189,8 @@ public class MapGameController implements Initializable {
         mapStack.setAlignment(close,Pos.BOTTOM_RIGHT);
         mapStack.setAlignment(yourScore,Pos.TOP_CENTER);
         mapStack.setAlignment(rank,Pos.CENTER);
-        mapStack.setMargin(ranking, new Insets(90,140,88,0));
-        mapStack.setMargin(next, new Insets(90,65,88,0));
+        mapStack.setMargin(ranking, new Insets(90,185,65,0));
+        mapStack.setMargin(next, new Insets(90,110,65,0));
         mapStack.setMargin(close, new Insets(0,40,32,0));
         mapStack.setMargin(scoreWindowView, new Insets(0,0,20,0));
         mapStack.setMargin(yourScore, new Insets(50,0,0,0));
@@ -198,7 +214,7 @@ public class MapGameController implements Initializable {
             isgoal = false;
             resetMap();
             mapStack.getChildren().removeAll(goalImageView,ranking,next);
-            mapPrint(tom, maptom);
+            //mapPrint(tom, maptom);
         });
         rank.setFont(Font.loadFont("file:font/rPOP.otf",28));
         rank.setStyle("-fx-line-spacing: 8px;"+"-fx-stroke: #00CC00;");
@@ -206,29 +222,42 @@ public class MapGameController implements Initializable {
         yourScore.setFont(Font.loadFont("file:font/rPOP.otf",60));
         yourScore.setTextFill(Color.WHITE);
         item_message.setFont(Font.loadFont("file:font/rPOP.otf",28));
+        time.setFont(Font.loadFont("file:font/rPOP.otf", 28));
     }
+
+    //**RESET MAP */
     public void resetMap(){
         outputAction("RESET");
         initViews();
-        maptom = new MapData(21,15,-1);
+        maptom = new MapData(21,15,99);
         tom = new MoveTom(1, 1, maptom);
-        mapjerry = new MapData(21,15,0);
+        mapjerry = new MapData(21,15,-99);
         jerry = new MoveJerry(1, 1, mapjerry);
         isgoal = false;
-        MoveChara.setItem(0);
+        tom.setItem(0);
         MoveChara.message = "アイテム数: 0";
         mapStack.getChildren().removeAll(goalImageView,ranking,next);
+        timer.stop();
+        is_timer_start = false;
+        time.setText("LOADING...");
+        mapPrint(tom, maptom);
+        isjerrymap = false;
+        timer.play();
+        is_timer_start = true;
     }
-    //DEBUG THROUGH WALL
+    
+    //**DEBUG THROUGH WALL */
     public void func1ButtonAction(ActionEvent event) {
         System.out.println(mapjerry.getItem());
         maptom.fillMap(MapData.TYPE_NONE);
-        MoveTom.setItem(5);
+        mapjerry.fillMap(MapData.TYPE_NONE);
+        tom.setItem(5);
         maptom.setGoal(19,13);
         mapStack.getChildren().removeAll(goalImageView,ranking,next);
         mapPrint(tom, maptom);
     }
-    //DEBUG RESET
+
+    //**DEBUG RESET */
     public void func2ButtonAction(ActionEvent event) {
         if(move == false){
             resetMap();
@@ -236,6 +265,8 @@ public class MapGameController implements Initializable {
             isjerrymap = false;
         }
     }
+
+    //**TOM AI */
     public void moveTom(){
         timeline = new Timeline(
             new KeyFrame(
@@ -302,7 +333,8 @@ public class MapGameController implements Initializable {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
-    //DEBUG GOAL
+
+    //**CHANGE TOM VIEW */
     public Timeline timeline;
     public int tmpx,tmpy;
     public boolean move = false;
@@ -342,6 +374,8 @@ public class MapGameController implements Initializable {
             movetom.play();
         }
     }
+
+    //**CHANGE JERRY VIEW */
     public void func4ButtonAction(ActionEvent event) {
         if(move == false){
             isjerrymap = true;

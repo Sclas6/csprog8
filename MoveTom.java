@@ -2,17 +2,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class MoveTom extends MoveChara{
-    private final String[] dirStrings  = { "d", "l", "r", "u" };
-    private final String[] kindStrings = { "1", "2", "3" };
-    private final String pngPathBefore = "png/jerry/jerry";
-    private final String pngPathAfter  = ".png";
-    private Image[][] charaImages;
-    private ImageView[] charaImageViews;
-    private ImageAnimation[] charaImageAnimations;
+    private String pngPathBefore = "png/tom/tom";
 
     MoveTom(int startX, int startY, MapData mapData){
-
-
         super(startX, startY, mapData);
         super.mapData = mapData;
         super.pngPathBefore = this.pngPathBefore;
@@ -31,5 +23,6 @@ public class MoveTom extends MoveChara{
             charaImageViews[i] = new ImageView(charaImages[i][0]);
             charaImageAnimations[i] = new ImageAnimation( charaImageViews[i], charaImages[i] );
         }
+        setCharaDir(TYPE_DOWN);
     }
 }

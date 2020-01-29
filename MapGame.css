@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'rPOP';
-    src: url(https://www.homepage-tukurikata.com/fonts/sample.woff);
+    src: url('font/rPOP.ttf');
 }
-#label2{
+.item_message{
     -fx-font-size: 28;
-    -fx-font-family: rPOP;
+    -fx-font-family: 'rPOP';
 }
 .button{
     -fx-background-color: transparent;
@@ -22,7 +22,4 @@
     -fx-translate-y:none;
     -fx-background-color: #e8e8e8;
     -fx-selection-bar: black;
-}
-.root{
-
 }
