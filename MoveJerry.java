@@ -3,6 +3,7 @@ import javafx.scene.image.ImageView;
 
 public class MoveJerry extends MoveChara{
     private String pngPathBefore = "png/jerry/jerry";
+    public static int life = 5;
 
     MoveJerry(int startX, int startY, MapData mapData){
         super(startX, startY, mapData);
@@ -24,5 +25,8 @@ public class MoveJerry extends MoveChara{
             charaImageAnimations[i] = new ImageAnimation( charaImageViews[i], charaImages[i] );
         }
         setCharaDir(TYPE_DOWN);
+    }
+    static void setLife(int i){
+        life = i;
     }
 }

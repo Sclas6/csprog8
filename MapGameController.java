@@ -31,13 +31,15 @@ public class MapGameController implements Initializable {
     public MoveJerry jerry;
     public GridPane mapGrid;
     public GridPane itemGrid;
+    public GridPane lifeGrid;
     public StackPane mapStack;
     public ImageView[] mapImageViews;
     public ImageView[] itemImageViews;
+    public ImageView[] lifeImageViews;
     //For Goal Jadging
     public boolean isgoal = false;
     //map player seeing
-    public static boolean isjerrymap;
+    public static boolean isjerrymap = false;
     //Making Goal Effects
     public Image goalImage = new Image("png/GOAL.png");
     public Image scoreWindow = new Image("png/ScoreWindow.png");
@@ -54,9 +56,9 @@ public class MapGameController implements Initializable {
     public Label time;
     public static Timeline timer;
     public Label item_message;
+    public Label life_message;
     public int count;
     public static boolean is_timer_start = false;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         maptom = new MapData(21,15,99);
@@ -72,7 +74,7 @@ public class MapGameController implements Initializable {
             }
         }
         initViews();
-        isjerrymap = true;
+        isjerrymap = false;
         Timer(240);
         timer.stop();
         mapPrint(tom, maptom);
@@ -98,37 +100,49 @@ public class MapGameController implements Initializable {
         if(isjerrymap==false && (tom.getPosX()*tom.getPosY()!=jerry.getPosX()*jerry.getPosY())){
             mapGrid.add(remnant,jerry.getPosX(),jerry.getPosY());
         }
-        if(is_timer_start == false){
-            //240
-            Timer(240);
-            is_timer_start =true;
-        }
-        itemImageViews = new ImageView[99];
+        itemImageViews = new ImageView[Math.max(tom.getItemCount(),jerry.getItemCount())];
+        lifeImageViews = new ImageView[5];
         itemGrid.getChildren().clear();
         if(isjerrymap==true){
             for(int i=0;i<jerry.getItemCount();i++){
                 itemImageViews[i] = new ImageView(new Image("png/ITEM2.png"));
                 itemGrid.add(itemImageViews[i],i,0);
             }
+            for(int i=0;i<5;i++){
+                if(i<jerry.life){
+                    lifeImageViews[i] = new ImageView(new Image("png/LIFE.png"));
+                }
+                else{
+                    lifeImageViews[i] = new ImageView(new Image("png/LIFE_2.png"));
+                }
+                lifeGrid.add(lifeImageViews[i],i,0);
+                life_message.setText("たいりょく:");
+            }
         }else{
             for(int i=0;i<tom.getItemCount();i++){
                 itemImageViews[i] = new ImageView(new Image("png/ITEM.png"));
                 itemGrid.add(itemImageViews[i],i,0);
             }
+            lifeGrid.getChildren().clear();
+            life_message.setText("");
+        }
+        if(jerry.life<=0){
+            gameOver();
         }
     }
 
     //run when chara reachs goal
     public void goalAction(MoveChara c,MapData m){
         if (c.isGoal(m)==true && isgoal==false){
+            timer.stop();
             isgoal = true;
             makeScore();
             mapStack.getChildren().addAll(goalImageView,ranking,next);
             CsvManager.exportCsv();
-            while(timer.getStatus()==Status.RUNNING){
+            /*while(timer.getStatus()==Status.PAUSED){
                 timer.stop();
-            }
-            is_timer_start = false;
+            }*/
+            //is_timer_start = false;
         }
     }
     /**SETTING TIMER */
@@ -141,15 +155,20 @@ public class MapGameController implements Initializable {
                 count -= 1;
                 time.setText("残り時間: "+Integer.toString(count));
                 if(count<0){
-                    resetMap();
-                    timer.stop();
-                    is_timer_start = false;
-                    time.setText("LOADING...");
-                    MapGame.gameOver();
+                    gameOver();
                 }
             }
         }));
         timer.setCycleCount(c*2);
+    }
+
+    public void gameOver(){
+        resetMap();
+        mapPrint(tom, maptom);
+        isjerrymap = false;
+        timer.stop();
+        time.setText("LOADING...");
+        MapGame.gameOver();
     }
 
     /**MAKING SCORE FORMAT */
@@ -163,7 +182,7 @@ public class MapGameController implements Initializable {
 
     //**MAKING SCORE */
     public void makeScore(){
-      score = (int)(count*1000 + tom.getItemCount()*4000);
+        score = (int)(count*1000 + tom.getItemCount()*4000);
     }
 
     //**GET SCORE */
@@ -222,6 +241,7 @@ public class MapGameController implements Initializable {
         yourScore.setFont(Font.loadFont("file:font/rPOP.otf",60));
         yourScore.setTextFill(Color.WHITE);
         item_message.setFont(Font.loadFont("file:font/rPOP.otf",28));
+        life_message.setFont(Font.loadFont("file:font/rPOP.otf",28));
         time.setFont(Font.loadFont("file:font/rPOP.otf", 28));
     }
 
@@ -235,9 +255,11 @@ public class MapGameController implements Initializable {
         jerry = new MoveJerry(1, 1, mapjerry);
         isgoal = false;
         tom.setItem(0);
-        MoveChara.message = "アイテム数: 0";
+        jerry.setItem(0);
+        jerry.setLife(5);
         mapStack.getChildren().removeAll(goalImageView,ranking,next);
         timer.stop();
+        Timer(240);
         is_timer_start = false;
         time.setText("LOADING...");
         mapPrint(tom, maptom);
@@ -247,7 +269,7 @@ public class MapGameController implements Initializable {
     }
     
     //**DEBUG THROUGH WALL */
-    public void func1ButtonAction(ActionEvent event) {
+    /*public void func1ButtonAction(ActionEvent event) {
         System.out.println(mapjerry.getItem());
         maptom.fillMap(MapData.TYPE_NONE);
         mapjerry.fillMap(MapData.TYPE_NONE);
@@ -255,14 +277,63 @@ public class MapGameController implements Initializable {
         maptom.setGoal(19,13);
         mapStack.getChildren().removeAll(goalImageView,ranking,next);
         mapPrint(tom, maptom);
-    }
+    }*/
 
     //**DEBUG RESET */
-    public void func2ButtonAction(ActionEvent event) {
+    /*public void func2ButtonAction(ActionEvent event) {
         if(move == false){
             resetMap();
             mapPrint(tom, maptom);
             isjerrymap = false;
+        }
+    }*/
+
+    public void func1ButtonAction(ActionEvent event) {
+        if(isjerrymap&&jerry.getItemCount()>0&&jerry.life<5){
+            jerry.life+=1;
+            jerry.setItem(jerry.getItemCount()-1);
+            mapPrint(jerry,mapjerry);
+            outputAction("HEAL");
+        }
+    }
+
+    public void func2ButtonAction(ActionEvent event) {
+        if(isjerrymap&&jerry.getItemCount()>0){
+            int charaDir = jerry.getCharaDir();
+            switch (charaDir) {
+                case 0:
+                    if(mapjerry.getMap(jerry.getPosX(),jerry.getPosY()+1)==MapData.TYPE_WALL&&jerry.getPosY()+1!=14){
+                        mapjerry.setMap(jerry.getPosX(),jerry.getPosY()+1,MapData.TYPE_NONE);
+                        mapjerry.setImageViews();
+                        jerry.setItem(jerry.getItemCount()-1);
+                        mapPrint(jerry,mapjerry);
+                    }
+                    break;
+                case 1:
+                    if(mapjerry.getMap(jerry.getPosX()-1,jerry.getPosY())==MapData.TYPE_WALL&&jerry.getPosX()-1!=0){
+                        mapjerry.setMap(jerry.getPosX()-1,jerry.getPosY(),MapData.TYPE_NONE);
+                        mapjerry.setImageViews();
+                        jerry.setItem(jerry.getItemCount()-1);
+                        mapPrint(jerry,mapjerry);
+                    }
+                    break;
+                case 2:
+                    if(mapjerry.getMap(jerry.getPosX()+1,jerry.getPosY())==MapData.TYPE_WALL&&jerry.getPosX()+1!=20){
+                        mapjerry.setMap(jerry.getPosX()+1,jerry.getPosY(),MapData.TYPE_NONE);
+                        mapjerry.setImageViews();
+                        jerry.setItem(jerry.getItemCount()-1);
+                        mapPrint(jerry,mapjerry);
+                    }
+                    break;
+                case 3:
+                    if(mapjerry.getMap(jerry.getPosX(),jerry.getPosY()-1)==MapData.TYPE_WALL&&jerry.getPosY()-1!=0){
+                        mapjerry.setMap(jerry.getPosX(),jerry.getPosY()-1,MapData.TYPE_NONE);
+                        mapjerry.setImageViews();
+                        jerry.setItem(jerry.getItemCount()-1);
+                        mapPrint(jerry,mapjerry);
+                    }
+                    break;
+            }
         }
     }
 
@@ -280,6 +351,10 @@ public class MapGameController implements Initializable {
                         if(dx==tmpx&&dy==tmpy){
                             timeline.stop();
                             move = false;
+                            if((jerry.getPosX()==tom.getPosX())&&(jerry.getPosY()==tom.getPosY())){
+                                jerry.life-=1;
+                                System.out.println(jerry.life);
+                            }
                             //map2 = true;
                             //mapPrint(jerry,mapData2);
                         }else{

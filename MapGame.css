@@ -1,11 +1,3 @@
-@font-face {
-	font-family: 'rPOP';
-    src: url('font/rPOP.ttf');
-}
-.item_message{
-    -fx-font-size: 28;
-    -fx-font-family: 'rPOP';
-}
 .button{
     -fx-background-color: transparent;
     -fx-border: none;

@@ -55,6 +55,10 @@ public class MoveChara {
         return message;
     }
 
+    public int getCharaDir(){
+        return charaDir;
+    }
+
     public void changeCount(){
         count = count + diffx;
         if (count > 2) {
@@ -93,7 +97,7 @@ public class MoveChara {
     }
     //With Items, chara can enter goal flag
     public boolean canGoal(MapData m){
-        if (getItemCount() >= m.getItem()){
+        if (getItemCount() >= m.getItem()||true){
             return true;
         }
         else{
