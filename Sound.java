@@ -7,7 +7,7 @@ public class Sound {
     AudioClip mediaPlayer;
 
     enum Type {
-        MenuBgm, GameBgm, Button, Dig, Damage, GameOver
+        MenuBgm, GameBgm, Button, Dig, Damage, GameOver, GetItem, WallEx
     }
     enum PlayType {
         BGM, SE
@@ -22,7 +22,9 @@ public class Sound {
 		loadSound(Type.Button, PlayType.SE, "sounds/button_shot.wav");
 		loadSound(Type.Dig, PlayType.SE, "sounds/dig.wav");
 		loadSound(Type.Damage, PlayType.SE, "sounds/damage.wav");
-		loadSound(Type.GameOver, PlayType.SE, "sounds/gameover.wav");
+        loadSound(Type.GameOver, PlayType.SE, "sounds/gameover.wav");
+        loadSound(Type.GetItem, PlayType.SE, "sounds/getitem.wav");
+        loadSound(Type.WallEx, PlayType.SE, "sounds/wallex.wav");
     }
     private void loadSound(Type type, PlayType pt, String filePath)
 	{

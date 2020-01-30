@@ -19,7 +19,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.animation.Timeline;
-import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
@@ -169,6 +168,8 @@ public class MapGameController implements Initializable {
         timer.stop();
         time.setText("LOADING...");
         MapGame.gameOver();
+        SoundPlayer.stop(Sound.Type.GameBgm);
+        SoundPlayer.play(Sound.Type.GameOver);
     }
 
     /**MAKING SCORE FORMAT */
@@ -303,6 +304,7 @@ public class MapGameController implements Initializable {
             switch (charaDir) {
                 case 0:
                     if(mapjerry.getMap(jerry.getPosX(),jerry.getPosY()+1)==MapData.TYPE_WALL&&jerry.getPosY()+1!=14){
+                        SoundPlayer.play(Sound.Type.WallEx);
                         mapjerry.setMap(jerry.getPosX(),jerry.getPosY()+1,MapData.TYPE_NONE);
                         mapjerry.setImageViews();
                         jerry.setItem(jerry.getItemCount()-1);
@@ -311,6 +313,7 @@ public class MapGameController implements Initializable {
                     break;
                 case 1:
                     if(mapjerry.getMap(jerry.getPosX()-1,jerry.getPosY())==MapData.TYPE_WALL&&jerry.getPosX()-1!=0){
+                        SoundPlayer.play(Sound.Type.WallEx);
                         mapjerry.setMap(jerry.getPosX()-1,jerry.getPosY(),MapData.TYPE_NONE);
                         mapjerry.setImageViews();
                         jerry.setItem(jerry.getItemCount()-1);
@@ -319,6 +322,7 @@ public class MapGameController implements Initializable {
                     break;
                 case 2:
                     if(mapjerry.getMap(jerry.getPosX()+1,jerry.getPosY())==MapData.TYPE_WALL&&jerry.getPosX()+1!=20){
+                        SoundPlayer.play(Sound.Type.WallEx);
                         mapjerry.setMap(jerry.getPosX()+1,jerry.getPosY(),MapData.TYPE_NONE);
                         mapjerry.setImageViews();
                         jerry.setItem(jerry.getItemCount()-1);
@@ -327,6 +331,7 @@ public class MapGameController implements Initializable {
                     break;
                 case 3:
                     if(mapjerry.getMap(jerry.getPosX(),jerry.getPosY()-1)==MapData.TYPE_WALL&&jerry.getPosY()-1!=0){
+                        SoundPlayer.play(Sound.Type.WallEx);
                         mapjerry.setMap(jerry.getPosX(),jerry.getPosY()-1,MapData.TYPE_NONE);
                         mapjerry.setImageViews();
                         jerry.setItem(jerry.getItemCount()-1);
@@ -345,18 +350,19 @@ public class MapGameController implements Initializable {
                 new EventHandler<ActionEvent>(){
                     @Override
                     public void handle(ActionEvent event){
+                        if((jerry.getPosX()==tom.getPosX())&&(jerry.getPosY()==tom.getPosY())){
+                            jerry.life-=1;
+                            SoundPlayer.play(Sound.Type.Damage);
+                            timeline.stop();
+                            move = false;
+                            //System.out.println(jerry.life);
+                        }
                         int dx,dy;
                         dx = jerry.getPosX()-tom.getPosX();
                         dy = jerry.getPosY()-tom.getPosY();
                         if(dx==tmpx&&dy==tmpy){
                             timeline.stop();
                             move = false;
-                            if((jerry.getPosX()==tom.getPosX())&&(jerry.getPosY()==tom.getPosY())){
-                                jerry.life-=1;
-                                System.out.println(jerry.life);
-                            }
-                            //map2 = true;
-                            //mapPrint(jerry,mapData2);
                         }else{
                             System.out.println("( "+dx+","+dy+" )");
                         }
@@ -417,6 +423,7 @@ public class MapGameController implements Initializable {
         if(isjerrymap == true){
             isjerrymap = false;
             move = true;
+            SoundPlayer.play(Sound.Type.Dig);
             Image jerryhole = new Image(new File("png/JERRYHOLE.gif").toURI().toString());
             ImageView jerryholeimage = new ImageView(jerryhole);
             mapGrid.add(jerryholeimage, jerry.getPosX(), jerry.getPosY());
@@ -430,6 +437,7 @@ public class MapGameController implements Initializable {
                             Image jerryhole2 = new Image(new File("png/JERRYHOLE2.gif").toURI().toString());
                             ImageView jerryholeimage2 = new ImageView(jerryhole2);
                             mapGrid.add(jerryholeimage2, jerry.getPosX(), jerry.getPosY());
+                            SoundPlayer.play(Sound.Type.Dig);
                         }
                     }
                 )

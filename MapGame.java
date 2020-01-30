@@ -54,7 +54,11 @@ public class MapGame extends Application {
         ImageView overImageView = new ImageView(overImage);
         Button contBtn = new Button("Continue");
         StackPane sp = new StackPane();
-        contBtn.setOnMouseClicked(event -> gameStart());
+        contBtn.setOnMouseClicked(event -> {
+            gameStart();
+            SoundPlayer.stop(Sound.Type.GameOver);
+        }
+        );
         sp.setAlignment(contBtn,Pos.BOTTOM_RIGHT);
         sp.setMargin(contBtn,new Insets(0,10,10,0));
         sp.getChildren().addAll(overImageView,contBtn);

@@ -97,7 +97,7 @@ public class MoveChara {
     }
     //With Items, chara can enter goal flag
     public boolean canGoal(MapData m){
-        if (getItemCount() >= m.getItem()||true){
+        if (getItemCount() >= 1){
             return true;
         }
         else{
@@ -142,11 +142,13 @@ public class MoveChara {
                 mapData.setMap(posX,posY,MapData.TYPE_NONE);
                 mapData.setImageViews();
                 message = "アイテム数: "+Integer.toString(this.item_count);
+                SoundPlayer.play(Sound.Type.GetItem);
             }else if(mapData.getMap(posX,posY)==MapData.TYPE_ITEM2){
                 item_count++;
                 mapData.setMap(posX,posY,MapData.TYPE_NONE);
                 mapData.setImageViews();
                 message = "アイテム数: "+Integer.toString(this.item_count);
+                SoundPlayer.play(Sound.Type.GetItem);
             }
             return true;
         }else if(mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL&&canGoal(mapData)==false){
