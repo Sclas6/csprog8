@@ -25,9 +25,9 @@ public class MoveChara {
     private int count   = 0;
     private int diffx   = 1;
     private int charaDir;
-    public static int item_count = 0;
+    public  int item_count = 0;
     public boolean isgoal = false;
-    public static String message="アイテム数: 0";
+    public static String message="アイテム数:";
 
     MoveChara(int startX, int startY, MapData mapData){
         this.mapData = mapData;
@@ -50,12 +50,13 @@ public class MoveChara {
 
         setCharaDir(TYPE_DOWN);
     }
-    MoveChara(){
-        System.out.print("a");
-    }
 
     public String getMessage(){
         return message;
+    }
+
+    public int getCharaDir(){
+        return charaDir;
     }
 
     public void changeCount(){
@@ -88,15 +89,15 @@ public class MoveChara {
         }
     }
 
-    public static int getItemCount(){
+    public int getItemCount(){
         return item_count;
     }
-    public static void setItem(int i){
+    public void setItem(int i){
         item_count = i;
     }
     //With Items, chara can enter goal flag
-    public boolean canGoal(){
-        if (getItemCount() == mapData.getItem()){
+    public boolean canGoal(MapData m){
+        if (getItemCount() >= m.getItem()||true){
             return true;
         }
         else{
@@ -107,7 +108,7 @@ public class MoveChara {
     public boolean isGoal(MapData m){
         for(int y=0; y<m.getHeight(); y++){
             for(int x=0; x<m.getWidth(); x++){
-                if(m.getMap(getPosX(), getPosY()) == MapData.TYPE_GOAL && canGoal() == true && isgoal == false){
+                if(m.getMap(getPosX(), getPosY()) == MapData.TYPE_GOAL && canGoal(m) == true && isgoal == false){
                     System.out.print("GOAL");
                     isgoal = true;
                 }
@@ -126,6 +127,8 @@ public class MoveChara {
             return true;
         } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_ITEM){
         return true;
+        } else if(mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_ITEM2){
+            return true;
         }
         return false;
     }
@@ -138,10 +141,15 @@ public class MoveChara {
                 item_count++;
                 mapData.setMap(posX,posY,MapData.TYPE_NONE);
                 mapData.setImageViews();
-                message = "アイテム数: "+Integer.toString(MoveChara.item_count);
+                message = "アイテム数: "+Integer.toString(this.item_count);
+            }else if(mapData.getMap(posX,posY)==MapData.TYPE_ITEM2){
+                item_count++;
+                mapData.setMap(posX,posY,MapData.TYPE_NONE);
+                mapData.setImageViews();
+                message = "アイテム数: "+Integer.toString(this.item_count);
             }
             return true;
-        }else if(mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL&&canGoal()==false){
+        }else if(mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_GOAL&&canGoal(mapData)==false){
             message = "アイテムが足りません!";
             return false;
         }

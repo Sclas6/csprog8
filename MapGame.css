@@ -15,3 +15,6 @@
     -fx-background-color: #e8e8e8;
     -fx-selection-bar: black;
 }
+#window{
+    -fx-background-color: white;
+}

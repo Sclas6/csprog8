@@ -6,13 +6,15 @@ public class MapData {
     public static final int TYPE_WALL   = 1;
     public static final int TYPE_OTHERS = 2;
     public static final int TYPE_ITEM = 3;
-    public static final int TYPE_GOAL = 4;
-    private static final String mapImageFiles[] = {
+    public static final int TYPE_ITEM2 = 4;
+    public static final int TYPE_GOAL = 5;
+    private static String mapImageFiles[] = {
         "png/SPACE.png",
         "png/WALL.png",
         "png/SPACE.png",
         "png/ITEM.png",
-        "png/GOALFLAG.png"// not used
+        "png/ITEM2.png",
+        "png/GOALFLAG.png"
     };
 
     private Image[] mapImages;
@@ -21,6 +23,10 @@ public class MapData {
     private int width;
     private int height;
     private int item_count;
+    public static enum Type{
+        tom,
+        jerry
+    };
 
     MapData(int x, int y, int item){
         mapImages     = new Image[mapImageFiles.length];
@@ -32,14 +38,17 @@ public class MapData {
         width  = x;
         height = y;
         maps = new int[y][x];
-        int i=((int)(Math.random()*100)%3==0)?((int)(Math.random()*100)%3==0)?3:4:5;
-        i = (item == -1)? i:item;
-
         fillMap(MapData.TYPE_WALL);
         digMap(1, 3);
-        setItem(i);
-        if(item_count!=0){
+        int i=((int)(Math.random()*100)%3==0)?((int)(Math.random()*100)%3==0)?3:4:5;
+        //99, random
+        i = (Math.abs(item) == 99)? i:item;
+        if(item>0){
+            setItem(i,Type.tom);
             setGoal(19,13);
+        }
+        else{
+            setItem(Math.abs(i),Type.jerry);
         }
         setImageViews();
     }
@@ -114,14 +123,18 @@ public class MapData {
         setMap(x,y,MapData.TYPE_GOAL);
     }
 
-    public void setItem(int i){
+    public void setItem(int i, Type t){
         item_count = 0;
         while(item_count<i){
             for(int y = 0;y<getHeight();y++){
                 for(int x = 0;x<getWidth();x++){
                     if(getMap(x,y)==MapData.TYPE_NONE&&(int)(Math.random()*100)%40==0&&item_count<i&&(x!=1&&y!=1)&&(x!=19&&y!=13)){
                         item_count++;
-                        setMap(x,y,MapData.TYPE_ITEM);
+                        if(t==Type.tom){
+                            setMap(x,y,MapData.TYPE_ITEM);
+                        }else{
+                            setMap(x,y,MapData.TYPE_ITEM2);
+                        }
                     }
                     //System.out.println(count);
                 }

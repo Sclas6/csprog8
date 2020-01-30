@@ -5,35 +5,46 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.input.* ?>
-
-<VBox fx:controller="MapGameController" xmlns:fx="http://javafx.com/fxml"
+<VBox fx:controller="MapGameController" fx:id="window" xmlns:fx="http://javafx.com/fxml" stylesheets="MapGame.css" 
       onKeyPressed="#keyAction">
   <padding>
     <Insets top="10" right="10" bottom="10" left="10"/>
   </padding>
 
   <children>
-    <HBox prefHeight="50" stylesheets="MapGame.css" >
+    <HBox prefHeight="50">
       <children>
 	<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-	  <Button fx:id = "up" text="↑" GridPane.rowIndex="0" GridPane.columnIndex="1" onAction="#upButtonAction" />
-	  <Button text="←" GridPane.rowIndex="1" GridPane.columnIndex="0" onAction="#leftButtonAction"/>
-	  <Button text="→" GridPane.rowIndex="1" GridPane.columnIndex="2" onAction="#rightButtonAction" />
-	  <Button text="↓" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#downButtonAction" />
+      <Button fx:id = "up" text="↑" GridPane.rowIndex="0" GridPane.columnIndex="1" onAction="#upButtonAction" />
+      <Button text="←" GridPane.rowIndex="1" GridPane.columnIndex="0" onAction="#leftButtonAction"/>
+      <Button text="→" GridPane.rowIndex="1" GridPane.columnIndex="2" onAction="#rightButtonAction" />
+      <Button text="↓" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#downButtonAction" />
 	</GridPane>
-	<Button text="func1" prefWidth="100" onAction="#func1ButtonAction" />
-	<Button text="func2" prefWidth="100" onAction="#func2ButtonAction"/>
+	<Button text="Heal" prefWidth="100" onAction="#func1ButtonAction" />
+	<Button text="Dig" prefWidth="100" onAction="#func2ButtonAction"/>
 	<Button text="Tom" prefWidth="100" onAction="#func3ButtonAction"/>
 	<Button text="Jerry" prefWidth="100" onAction="#func4ButtonAction"/>
       </children>
     </HBox>
-    <HBox>
-      <Label fx:id="label1" prefHeight="40.0" prefWidth="300.0" text="ITEM"/>
-      <Label fx:id="label2" prefHeight="40.0" prefWidth="300.0" text="ITEM"/>
-    </HBox>
+    <VBox>
+      <HBox>
+        <Label fx:id="life_message" prefHeight="40.0" prefWidth="160.0" text="たいりょく:">
+          <padding><Insets top="0" right="0" bottom="12" left="0"/></padding>
+        </Label>
+        <GridPane fx:id="lifeGrid" prefWidth="180" prefHeight="32"/>
+      </HBox>
+      <HBox>
+        <Label fx:id="item_message" prefHeight="40.0" prefWidth="160.0" text="アイテム数:">
+          <padding><Insets top="0" right="0" bottom="12" left="0"/></padding>
+        </Label>
+        <GridPane fx:id="itemGrid" prefWidth="180" prefHeight="32"/>
+        <Label fx:id = "time" prefHeight="40.0" prefWidth = "300.0" text ="LOADING...">
+          <padding><Insets top="0" right="0" bottom="12" left="0"/></padding>
+        </Label>
+      </HBox>
+    </VBox>
       <StackPane fx:id="mapStack" prefWidth="80" prefHeight="80">
-        <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" >
-        </GridPane>
+        <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" />
       </StackPane>
   </children>
 </VBox>
